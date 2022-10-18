@@ -33,15 +33,18 @@ pub struct Network {
 
 impl Network {
 	/// Number of layers in the network
+	#[inline]
 	pub fn n_layers(&self) -> usize {
 		self.layers.len()
 	}
 
 	/// Length of a layer
+	#[inline]
 	pub fn layer_len(&self, ilayer: usize) -> usize {
 		self.layers[ilayer].a.len()
 	}
 
+	#[inline]
 	pub fn layer_mut(&mut self, ilayer: usize) -> &mut Layer {
 		assert!(ilayer < self.n_layers());
 
@@ -86,6 +89,7 @@ impl Network {
 		return network;
 	}
 
+	#[inline]
 	pub fn init_input_layer(&mut self, signal: &Signal) {
 		assert!(self.layers.len() > 0);
 		self.layers[0].a = signal.to_vec();
@@ -98,12 +102,14 @@ impl Network {
 	///
 	/// Expects layers of level 1 and higher (counting from 0)
 	///
+	#[inline]
 	pub fn edge(&self, ilayer: usize, ifrom: usize, ito: usize) -> &Edge {
 		assert!(ilayer > 0);
 
 		&self.layers[ilayer].edges[self.layer_len(ilayer - 1) * ifrom + ito]
 	}
 
+	#[inline]
 	pub fn edge_mut(&mut self, ilayer: usize, ifrom: usize, ito: usize) -> &mut Edge {
 		assert!(ilayer > 0);
 
@@ -112,19 +118,23 @@ impl Network {
 	}
 
 	/// Access activation value on a specified node and layer
+	#[inline]
 	pub fn a(&self, ilayer: usize, inode: usize) -> f32 {
 		self.layers[ilayer].a[inode]
 	}
 
 	/// Access the weighted sum value on a specified node and layer
+	#[inline]
 	pub fn z(&self, ilayer: usize, inode: usize) -> f32 {
 		self.layers[ilayer].z[inode]
 	}
 
+	#[inline]
 	pub fn set_a(&mut self, ilayer: usize, inode: usize, val: f32) {
 		self.layers[ilayer].a[inode] = val;
 	}
 
+	#[inline]
 	pub fn set_z(&mut self, ilayer: usize, inode: usize, val: f32) {
 		self.layers[ilayer].z[inode] = val;
 	}
