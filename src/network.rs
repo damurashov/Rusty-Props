@@ -121,6 +121,10 @@ impl Network {
 		self.layers[ilayer].a[inode]
 	}
 
+	pub fn set_a(&mut self, ilayer: usize, inode: usize, val: f32) {
+		self.layers[ilayer].a[inode] = val;
+	}
+
 	pub fn set_z(&mut self, ilayer: usize, inode: usize, val: f32) {
 		self.layers[ilayer].z[inode] = val;
 	}
