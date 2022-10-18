@@ -45,10 +45,12 @@ pub struct Network {
 }
 
 impl Network {
+	/// Number of layers in the network
 	pub fn n_layers(&self) -> usize {
 		self.layers.len()
 	}
 
+	/// Length of a layer
 	pub fn layer_len(&self, ilayer: usize) -> usize {
 		self.layers[ilayer].len()
 	}
@@ -59,6 +61,11 @@ impl Network {
 		&mut self.layers[ilayer]
 	}
 
+	/// Allocates a chunk in memory for a network with a specified geometry,
+	/// i.e. number of nodes on each layer.
+	///
+	/// `geometry` specifies how many nodes reside on a layer. Indices of
+	/// `geometry` items are layer indices in the network.
 	pub fn from_geometry(geometry: &std::vec::Vec<usize>) -> Network {
 		let mut network = Network{
 			layers: std::vec::Vec::new(),
@@ -117,10 +124,12 @@ impl Network {
 		&mut self.layers[ilayer].edges[iedge]
 	}
 
+	/// Access activation value on a specified node and layer
 	pub fn a(&self, ilayer: usize, inode: usize) -> f32 {
 		self.layers[ilayer].a[inode]
 	}
 
+	/// Access the weighted sum value on a specified node and layer
 	pub fn z(&self, ilayer: usize, inode: usize) -> f32 {
 		self.layers[ilayer].z[inode]
 	}
