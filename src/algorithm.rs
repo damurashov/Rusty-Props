@@ -6,11 +6,11 @@ use std::assert;
 
 pub type Signal = std::vec::Vec<f32>;
 
-pub struct Prop {
+pub struct ForwardPropagation {
 	activate: fn(f32) -> f32,
 }
 
-impl Prop {
+impl ForwardPropagation {
 	/// Forward propagation between adjacent layers
 	fn network_update_layer_propagate(&self, net: &mut network::Network, ilayer: usize) {
 		assert!(ilayer > 0);
