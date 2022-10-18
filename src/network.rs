@@ -5,22 +5,30 @@ pub use std;
 use std::assert;
 
 struct Edge {
-	w: f32,  /// Weight 
-	b: f32,  /// Bias
+	/// Weight
+	w: f32,
+	/// Bias
+	b: f32,
 }
 
 pub struct Layer {
 	edges: std::vec::Vec<Edge>,
-	z: std::vec::Vec<f32>,  /// Weighed sum from the previous layer 
-	a: std::vec::Vec<f32>,  /// Activation function of the weighed sum
+	/// Weighed sum from the previous layer
+	z: std::vec::Vec<f32>,
+	/// Activation function of the weighed sum
+	a: std::vec::Vec<f32>,
 }
 
 impl Layer {
-	pub fn edge(self, inode_from: usize, inode_to: usize) -> &Edge {
+	pub fn edge(&self, inode_from: usize, inode_to: usize) -> &Edge {
 		let n_nodes_prev: usize = self.edges.len() / self.z.len();
 		// TODO? Check geometry
-		
-		self.edges[n_nodes_prev * inode_from + inode_to]
+
+		&self.edges[n_nodes_prev * inode_from + inode_to]
+	}
+
+	pub fn len(&self) -> usize {
+		self.a.len()
 	}
 }
 
@@ -36,10 +44,10 @@ pub struct Network {
 
 impl Network {
 	pub fn n_layers(&self) -> usize {
-		self.a_vec.len()
+		self.layers.len()
 	}
 
-	pub fn layer_len(&self, ilayer: usize) {
+	pub fn layer_len(&self, ilayer: usize) -> usize {
 		self.layers[ilayer].len()
 	}
 
@@ -53,14 +61,14 @@ impl Network {
 	pub fn edge(&self, ilayer: usize, ifrom: usize, ito: usize) -> &Edge {
 		assert!(ilayer > 0);
 
-		self.layers[ilayer].edges[self.layer_len(ilayer - 1) * ifrom + ito]
+		&self.layers[ilayer].edges[self.layer_len(ilayer - 1) * ifrom + ito]
 	}
 
 	pub fn a(&self, ilayer: usize, inode: usize) -> f32 {
 		self.layers[ilayer].a[inode]
 	}
 
-	pub fn set_z(&self, ilayer: usize, inode: usize, val: f32) {
+	pub fn set_z(&mut self, ilayer: usize, inode: usize, val: f32) {
 		self.layers[ilayer].z[inode] = val;
 	}
 }
