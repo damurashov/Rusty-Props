@@ -3,6 +3,7 @@
 
 pub use std;
 use std::assert;
+use crate::algorithm::Signal;
 
 #[derive(Clone)]
 pub struct Edge {
@@ -89,6 +90,11 @@ impl Network {
 		}
 
 		return network;
+	}
+
+	pub fn init_input_layer(&mut self, signal: &Signal) {
+		assert!(self.layers.len() > 0);
+		self.layers[0].a = signal.to_vec();
 	}
 
 	/// Returns ref. to an edge
