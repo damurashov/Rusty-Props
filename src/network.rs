@@ -72,8 +72,12 @@ impl Network {
 			});
 			layer.a.reserve_exact(*nnodes);
 			layer.a.resize(*nnodes, 0.0f32);
-			layer.z.reserve_exact(*nnodes);
-			layer.z.resize(*nnodes, 0.0f32);
+
+			if size_prev != 0 {
+				layer.z.reserve_exact(*nnodes);
+				layer.z.resize(*nnodes, 0.0f32);
+			}
+
 			network.layers.push(layer);
 			size_prev = *nnodes;
 		}
