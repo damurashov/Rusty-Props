@@ -27,11 +27,22 @@ impl Prop {
 		}
 	}
 
+	fn network_update_layer_activate(&self, net: &mut network::Network, ilayer: usize) {
+		assert!(ilayer > 0);
+
+		for i in 1..net.layer_len(ilayer) {
+			let z = net.z(ilayer, i);
+			let a = (self.activate)(z);
+			net.set_a(ilayer, i, a);
+		}
+	}
+
 	pub fn run(&self, net: &mut network::Network, input: &Signal) {
 		net.init_input_layer(input);
 
 		for ilayer in 1..net.n_layers() {
 			self.network_update_layer_propagate(net, ilayer);
+			self.network_update_layer_activate(net, ilayer);
 		}
 	}
 }
