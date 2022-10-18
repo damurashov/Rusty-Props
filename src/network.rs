@@ -52,7 +52,7 @@ impl Network {
 		self.layers[ilayer].len()
 	}
 
-	pub fn from_geometry(geometry: &std::vec::Vec<usize>) {
+	pub fn from_geometry(geometry: &std::vec::Vec<usize>) -> Network {
 		let mut network = Network{
 			layers: std::vec::Vec::new(),
 		};
@@ -75,7 +75,10 @@ impl Network {
 			layer.z.reserve_exact(*nnodes);
 			layer.z.resize(*nnodes, 0.0f32);
 			network.layers.push(layer);
+			size_prev = *nnodes;
 		}
+
+		return network;
 	}
 
 	/// Returns ref. to an edge
