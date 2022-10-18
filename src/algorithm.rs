@@ -11,10 +11,6 @@ pub struct Prop {
 }
 
 impl Prop {
-	fn network_init(net: &mut network::Network, input: &Signal) {
-		net.init_input_layer(input);
-	}
-
 	/// Forward propagation between adjacent layers
 	fn network_update_layer_propagate(&self, net: &mut network::Network, ilayer: usize) {
 		assert!(ilayer > 0);
@@ -32,7 +28,7 @@ impl Prop {
 	}
 
 	pub fn run(&self, net: &mut network::Network, input: &Signal) {
-		Prop::network_init(net, input);
+		net.init_input_layer(input);
 
 		for ilayer in 1..net.n_layers() {
 			self.network_update_layer_propagate(net, ilayer);
