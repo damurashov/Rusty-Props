@@ -21,19 +21,6 @@ pub struct Layer {
 	a: std::vec::Vec<f32>,
 }
 
-impl Layer {
-	pub fn edge(&self, inode_from: usize, inode_to: usize) -> &Edge {
-		let n_nodes_prev: usize = self.edges.len() / self.z.len();
-		// TODO? Check geometry
-
-		&self.edges[n_nodes_prev * inode_from + inode_to]
-	}
-
-	pub fn len(&self) -> usize {
-		self.a.len()
-	}
-}
-
 /// Stores network weights and the results of intermediate calculations such as
 /// partial derivatives.
 ///
@@ -52,7 +39,7 @@ impl Network {
 
 	/// Length of a layer
 	pub fn layer_len(&self, ilayer: usize) -> usize {
-		self.layers[ilayer].len()
+		self.layers[ilayer].a.len()
 	}
 
 	pub fn layer_mut(&mut self, ilayer: usize) -> &mut Layer {
