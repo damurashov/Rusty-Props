@@ -27,6 +27,7 @@ impl ForwardPropagation {
 		}
 	}
 
+	/// Activation of "sum" nodes
 	fn network_update_layer_activate(&self, net: &mut network::Network, ilayer: usize) {
 		assert!(ilayer > 0);
 
