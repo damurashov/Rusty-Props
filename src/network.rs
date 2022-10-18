@@ -5,19 +5,19 @@ pub use std;
 use std::assert;
 
 #[derive(Clone)]
-struct Edge {
+pub struct Edge {
 	/// Weight
-	w: f32,
+	pub w: f32,
 	/// Bias
-	b: f32,
+	pub b: f32,
 }
 
 pub struct Layer {
-	edges: std::vec::Vec<Edge>,
+	pub edges: std::vec::Vec<Edge>,
 	/// Weighed sum from the previous layer
-	z: std::vec::Vec<f32>,
+	pub z: std::vec::Vec<f32>,
 	/// Activation function of the weighed sum
-	a: std::vec::Vec<f32>,
+	pub a: std::vec::Vec<f32>,
 }
 
 impl Layer {
@@ -50,6 +50,12 @@ impl Network {
 
 	pub fn layer_len(&self, ilayer: usize) -> usize {
 		self.layers[ilayer].len()
+	}
+
+	pub fn layer_mut(&mut self, ilayer: usize) -> &mut Layer {
+		assert!(ilayer < self.n_layers());
+
+		&mut self.layers[ilayer]
 	}
 
 	pub fn from_geometry(geometry: &std::vec::Vec<usize>) -> Network {
