@@ -109,7 +109,11 @@ mod test {
 
 	#[test]
 	fn test_network_construction() {
-		let _geometry = vec![128, 16, 32, 4];
-		let _network = Network::from_geometry(&_geometry);
+		let geometry = vec![128, 16, 32, 4];
+		let network = Network::from_geometry(&geometry);
+
+		for i in 0..geometry.len() {
+			assert_eq!(network.layer_len(i), geometry[i]);
+		}
 	}
 }
