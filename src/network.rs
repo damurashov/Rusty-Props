@@ -4,6 +4,7 @@
 pub use std;
 use std::assert;
 
+#[derive(Clone)]
 struct Edge {
 	/// Weight
 	w: f32,
@@ -51,6 +52,32 @@ impl Network {
 		self.layers[ilayer].len()
 	}
 
+	pub fn from_geometry(geometry: &std::vec::Vec<usize>) {
+		let mut network = Network{
+			layers: std::vec::Vec::new(),
+		};
+		network.layers.reserve_exact(geometry.len());
+		let mut size_prev = 0;
+
+		for nnodes in geometry {
+			let mut layer = Layer{
+				edges: std::vec::Vec::new(),
+				a: std::vec::Vec::new(),
+				z: std::vec::Vec::new(),
+			};
+			layer.edges.reserve_exact(size_prev * nnodes);
+			layer.edges.resize(size_prev * nnodes, Edge{
+				w: 0.0f32,
+				b: 0.0f32,
+			});
+			layer.a.reserve_exact(*nnodes);
+			layer.a.resize(*nnodes, 0.0f32);
+			layer.z.reserve_exact(*nnodes);
+			layer.z.resize(*nnodes, 0.0f32);
+			network.layers.push(layer);
+		}
+	}
+
 	/// Returns ref. to an edge
 	///
 	/// `ifrom` - id of the edge's origin node
@@ -70,5 +97,16 @@ impl Network {
 
 	pub fn set_z(&mut self, ilayer: usize, inode: usize, val: f32) {
 		self.layers[ilayer].z[inode] = val;
+	}
+}
+
+#[cfg(test)]
+mod test {
+	use super::Network;
+
+	#[test]
+	fn test_network_construction() {
+		let _geometry = vec![128, 16, 32, 4];
+		let _network = Network::from_geometry(&_geometry);
 	}
 }
