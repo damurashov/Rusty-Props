@@ -110,6 +110,13 @@ impl Network {
 		&self.layers[ilayer].edges[self.layer_len(ilayer - 1) * ifrom + ito]
 	}
 
+	pub fn edge_mut(&mut self, ilayer: usize, ifrom: usize, ito: usize) -> &mut Edge {
+		assert!(ilayer > 0);
+
+		let iedge = self.layer_len(ilayer - 1) * ifrom + ito;
+		&mut self.layers[ilayer].edges[iedge]
+	}
+
 	pub fn a(&self, ilayer: usize, inode: usize) -> f32 {
 		self.layers[ilayer].a[inode]
 	}
