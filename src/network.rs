@@ -14,11 +14,11 @@ pub struct Edge {
 }
 
 pub struct Layer {
-	pub edges: std::vec::Vec<Edge>,
+	edges: std::vec::Vec<Edge>,
 	/// Weighed sum from the previous layer
-	pub z: std::vec::Vec<f32>,
+	z: std::vec::Vec<f32>,
 	/// Activation function of the weighed sum
-	pub a: std::vec::Vec<f32>,
+	a: std::vec::Vec<f32>,
 }
 
 impl Layer {
