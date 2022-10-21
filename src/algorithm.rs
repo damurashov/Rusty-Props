@@ -24,6 +24,19 @@ pub fn network_init_random(net: &mut network::Network) {
 	}
 }
 
+#[cfg(test)]
+mod tests {
+	use crate::network::Network;
+	use super::network_init_random;
+
+	#[test]
+	fn test_network_random_initialization() {
+		let geometry = vec![128, 16, 32, 4];
+		let mut network = Network::from_geometry(&geometry);
+		network_init_random(&mut network);
+	}
+}
+
 impl ForwardPropagation {
 	/// Forward propagation between adjacent layers
 	fn network_update_layer_propagate(&self, net: &mut network::Network, ilayer: usize) {
@@ -60,8 +73,4 @@ impl ForwardPropagation {
 			self.network_update_layer_activate(net, ilayer);
 		}
 	}
-}
-
-#[cfg(test)]
-mod tests {
 }
