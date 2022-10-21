@@ -21,7 +21,7 @@ pub fn network_init_random(net: &mut network::Network) {
 }
 
 #[cfg(test)]
-mod tests {
+mod tests_module_functions {
 	use crate::network::Network;
 	use super::network_init_random;
 
@@ -77,7 +77,7 @@ impl ForwardPropagation {
 }
 
 #[cfg(test)]
-mod test {
+mod test_forward_propagation {
 	use super::{ForwardPropagation, network_init_random, Signal};
 	use crate::network;
 
@@ -103,16 +103,16 @@ mod test {
 	}
 }
 
+/// Cost function derivative for the output layer
+/// arg. 1: desired output layer value
+/// arg. 2: factual output layer value
 pub type Dcdz = fn(f32, f32) -> f32;
+/// Derivative of activation function by the weighed sum
+/// arg. 1: weighed sum value
 pub type Dadz = fn(f32) -> f32;
 
 struct BackPropagation {
-	/// Cost function derivative for the output layer
-	/// arg. 1: desired output layer value
-	/// arg. 2: factual output layer value
 	dcdz_output: Dcdz,
-	/// Derivative of activation function by the weighed sum
-	/// arg. 1: weighed sum value
 	dadz: Dadz,
 	net_cache: network::Network,
 }
@@ -125,5 +125,26 @@ impl BackPropagation {
 			dadz,
 			net_cache: network::Network::from_geometry(&geometry),
 		}
+	}
+}
+
+#[cfg(test)]
+mod test_back_propagation {
+	use super::BackPropagation;
+	use crate::network::Network;
+
+	fn dcdz_output_stub(reference: f32, actual: f32) -> f32 {
+		f32::NAN
+	}
+
+	fn dadz_stub(dz: f32) -> f32 {
+		f32::NAN
+	}
+
+	#[test]
+	fn test_back_propagation_construction() {
+		let geometry = vec![128, 16, 32, 4];
+		let network = Network::from_geometry(&geometry);
+		let _back_propagation = BackPropagation::from_network(&network, dcdz_output_stub, dadz_stub);
 	}
 }
