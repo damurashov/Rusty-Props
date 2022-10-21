@@ -42,10 +42,10 @@ impl ForwardPropagation {
 	fn network_update_layer_propagate(&self, net: &mut network::Network, ilayer: usize) {
 		assert!(ilayer > 0);
 
-		for ito in 1..net.layer_len(ilayer) {
+		for ito in 0..net.layer_len(ilayer) {
 			let mut sum = 0.0f32;
 
-			for ifrom in 1..net.layer_len(ilayer - 1) {
+			for ifrom in 0..net.layer_len(ilayer - 1) {
 				let edge = net.edge(ilayer, ifrom, ito);
 				sum += net.a(ilayer - 1, ifrom) * edge.w + edge.b;
 			}
