@@ -140,7 +140,7 @@ impl Network {
 	}
 
 	#[inline]
-	pub fn edges_iter_mut(&mut self, ilayer: usize) -> impl Iterator + '_ {
+	pub fn edges_iter_mut(&mut self, ilayer: usize) -> impl Iterator<Item = &'_ mut Edge> {
 		assert!(ilayer < self.n_layers());
 		self.layers[ilayer].edges.iter_mut()
 	}
