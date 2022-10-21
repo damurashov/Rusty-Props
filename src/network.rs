@@ -2,7 +2,7 @@
 ///
 
 pub use std;
-use std::assert;
+use std::{assert, iter::Iterator};
 use crate::algorithm::Signal;
 
 #[derive(Clone)]
@@ -137,6 +137,12 @@ impl Network {
 	#[inline]
 	pub fn set_z(&mut self, ilayer: usize, inode: usize, val: f32) {
 		self.layers[ilayer].z[inode] = val;
+	}
+
+	#[inline]
+	pub fn edges_iter_mut(&mut self, ilayer: usize) -> impl Iterator + '_ {
+		assert!(ilayer < self.n_layers());
+		self.layers[ilayer].edges.iter_mut()
 	}
 }
 
