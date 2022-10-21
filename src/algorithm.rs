@@ -2,7 +2,7 @@
 ///
 
 use crate::network;
-use std::assert;
+use std::{assert, vec::Vec};
 use rand::distributions::{Distribution, Uniform};
 
 pub type Signal = std::vec::Vec<f32>;
@@ -103,12 +103,27 @@ mod test {
 	}
 }
 
+pub type Dcdz = fn(f32, f32) -> f32;
+pub type Dadz = fn(f32) -> f32;
+
 struct BackPropagation {
 	/// Cost function derivative for the output layer
 	/// arg. 1: desired output layer value
 	/// arg. 2: factual output layer value
-	dcdz: fn(f32, f32) -> f32,
+	dcdz_output: Dcdz,
 	/// Derivative of activation function by the weighed sum
 	/// arg. 1: weighed sum value
-	dadz: fn(f32) -> f32
+	dadz: Dadz,
+	net_cache: network::Network,
+}
+
+impl BackPropagation {
+	fn from_network(net: &network::Network, dcdz_output: Dcdz, dadz: Dadz) -> BackPropagation {
+		let geometry: Vec<usize> = (0..net.n_layers()).map(|i| net.layer_len(i)).collect();
+		BackPropagation {
+			dcdz_output,
+			dadz,
+			net_cache: network::Network::from_geometry(&geometry),
+		}
+	}
 }
