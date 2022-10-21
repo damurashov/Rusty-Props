@@ -106,7 +106,7 @@ impl Network {
 	pub fn edge(&self, ilayer: usize, ifrom: usize, ito: usize) -> &Edge {
 		assert!(ilayer > 0);
 
-		&self.layers[ilayer].edges[self.layer_len(ilayer - 1) * ifrom + ito]
+		&self.layers[ilayer].edges[self.layer_len(ilayer - 1) * ito + ifrom]
 	}
 
 	#[inline]
