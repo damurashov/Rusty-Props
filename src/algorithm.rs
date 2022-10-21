@@ -7,10 +7,6 @@ use rand::distributions::{Distribution, Uniform};
 
 pub type Signal = std::vec::Vec<f32>;
 
-pub struct ForwardPropagation {
-	activate: fn(f32) -> f32,
-}
-
 /// Randomly initializes weights and biases of a network.
 pub fn network_init_random(net: &mut network::Network) {
 	let mut rng = rand::thread_rng();
@@ -36,6 +32,11 @@ mod tests {
 		network_init_random(&mut network);
 	}
 }
+
+pub struct ForwardPropagation {
+	activate: fn(f32) -> f32,
+}
+
 
 impl ForwardPropagation {
 	/// Forward propagation between adjacent layers
