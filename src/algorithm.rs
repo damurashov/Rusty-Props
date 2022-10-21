@@ -3,11 +3,25 @@
 
 use crate::network;
 use std::assert;
+use rand::distributions::{Distribution, Uniform};
 
 pub type Signal = std::vec::Vec<f32>;
 
 pub struct ForwardPropagation {
 	activate: fn(f32) -> f32,
+}
+
+/// Randomly initializes weights and biases of a network.
+pub fn network_init_random(net: &mut network::Network) {
+	let mut rng = rand::thread_rng();
+	let gen = Uniform::from(0.0f32..1.0f32);
+
+	for ilayer in 0..net.n_layers() {
+		for edge in net.edges_iter_mut(ilayer) {
+			edge.w = gen.sample(&mut rng);
+			edge.b = gen.sample(&mut rng);
+		}
+	}
 }
 
 impl ForwardPropagation {
@@ -50,6 +64,4 @@ impl ForwardPropagation {
 
 #[cfg(test)]
 mod tests {
-//	#[test]
-//	fn
 }
