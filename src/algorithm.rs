@@ -74,3 +74,30 @@ impl ForwardPropagation {
 		}
 	}
 }
+
+#[cfg(test)]
+mod test {
+	use super::{ForwardPropagation, network_init_random, Signal};
+	use crate::network;
+
+	#[inline]
+	fn step_function(x: f32) -> f32 {
+		if x < 0.0f32 {
+			0.0f32
+		} else {
+			x
+		}
+	}
+
+	#[test]
+	fn test_forward_propagation() {
+		let geometry = vec![128, 16, 32, 4];
+		let mut network = network::Network::from_geometry(&geometry);
+		let mut signal = Signal::new();
+		network_init_random(&mut network);
+		let forward_propagation = ForwardPropagation {
+			activate: step_function,
+		};
+		forward_propagation.run(&mut network, &signal);
+	}
+}
