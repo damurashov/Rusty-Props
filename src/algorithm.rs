@@ -101,3 +101,13 @@ mod test {
 		forward_propagation.run(&mut network, &signal);
 	}
 }
+
+struct BackPropagation {
+	/// Cost function derivative for the output layer
+	/// arg. 1: desired output layer value
+	/// arg. 2: factual output layer value
+	dcdz: fn(f32, f32) -> f32,
+	/// Derivative of activation function by the weighed sum
+	/// arg. 1: weighed sum value
+	dadz: fn(f32) -> f32
+}
