@@ -71,15 +71,15 @@ impl Network {
 			};
 			layer.edges.reserve_exact(size_prev * nnodes);
 			layer.edges.resize(size_prev * nnodes, Edge{
-				w: 0.0f32,
-				b: 0.0f32,
+				w: f32::NAN,
+				b: f32::NAN,
 			});
 			layer.a.reserve_exact(*nnodes);
-			layer.a.resize(*nnodes, 0.0f32);
+			layer.a.resize(*nnodes, f32::NAN);
 
 			if size_prev != 0 {
 				layer.z.reserve_exact(*nnodes);
-				layer.z.resize(*nnodes, 0.0f32);
+				layer.z.resize(*nnodes, f32::NAN);
 			}
 
 			network.layers.push(layer);
