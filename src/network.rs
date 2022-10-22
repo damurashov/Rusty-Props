@@ -56,6 +56,8 @@ impl Network {
 	///
 	/// `geometry` specifies how many nodes reside on a layer. Indices of
 	/// `geometry` items are layer indices in the network.
+	///
+	/// Post: the network will be initialized w/ NAN values
 	pub fn from_geometry(geometry: &std::vec::Vec<usize>) -> Network {
 		let mut network = Network{
 			layers: std::vec::Vec::new(),
