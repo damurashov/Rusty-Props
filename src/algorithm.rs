@@ -115,6 +115,7 @@ struct BackPropagation {
 	dcdz_output: Dcdz,
 	dadz: Dadz,
 	net_cache: network::Network,
+	epsilon: f32,
 }
 
 impl BackPropagation {
@@ -127,12 +128,13 @@ impl BackPropagation {
 	// TODO dzda
 	// TODO dadz
 
-	pub fn from_network(net: &network::Network, dcdz_output: Dcdz, dadz: Dadz) -> BackPropagation {
+	pub fn from_network(net: &network::Network, dcdz_output: Dcdz, dadz: Dadz, epsilon: f32) -> BackPropagation {
 		let geometry: Vec<usize> = (0..net.n_layers()).map(|i| net.layer_len(i)).collect();
 		BackPropagation {
 			dcdz_output,
 			dadz,
 			net_cache: network::Network::from_geometry(&geometry),
+			epsilon
 		}
 	}
 
