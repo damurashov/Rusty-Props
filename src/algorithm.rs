@@ -115,6 +115,7 @@ struct BackPropagation {
 	dcdz_output: Dcdz,
 	dadz: Dadz,
 	net_cache: network::Network,
+	/// Learning rate
 	epsilon: f32,
 }
 
