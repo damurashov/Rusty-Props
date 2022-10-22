@@ -92,6 +92,11 @@ impl Network {
 	}
 
 	#[inline]
+	fn edge_index(&self, ilayer_to: usize, ifrom: usize, ito: usize) -> usize {
+		self.layer_len(ilayer_to - 1) * ito + ifrom
+	}
+
+	#[inline]
 	pub fn init_input_layer(&mut self, signal: &Signal) {
 		assert!(self.layers.len() > 0);
 		self.layers[0].a = signal.to_vec();
@@ -107,15 +112,16 @@ impl Network {
 	#[inline]
 	pub fn edge(&self, ilayer: usize, ifrom: usize, ito: usize) -> &Edge {
 		assert!(ilayer > 0);
+		let iedge = self.edge_index(ilayer, ifrom, ito);
 
-		&self.layers[ilayer].edges[self.layer_len(ilayer - 1) * ito + ifrom]
+		&self.layers[ilayer].edges[iedge]
 	}
 
 	#[inline]
 	pub fn edge_mut(&mut self, ilayer: usize, ifrom: usize, ito: usize) -> &mut Edge {
 		assert!(ilayer > 0);
+		let iedge = self.edge_index(ilayer, ifrom, ito);
 
-		let iedge = self.layer_len(ilayer - 1) * ifrom + ito;
 		&mut self.layers[ilayer].edges[iedge]
 	}
 
