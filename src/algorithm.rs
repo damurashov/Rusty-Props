@@ -135,6 +135,10 @@ impl BackPropagation {
 			net_cache: network::Network::from_geometry(&geometry),
 		}
 	}
+
+	pub fn run(net: &mut network::Network, signal: &Signal) {
+		// TODO
+	}
 }
 
 #[cfg(test)]
