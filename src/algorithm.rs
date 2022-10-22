@@ -139,8 +139,15 @@ impl BackPropagation {
 		}
 	}
 
-	pub fn run(net: &mut network::Network, signal: &Signal) {
-		// TODO
+	/// Train the net using reference output
+	/// `network`: the ANN instance
+	/// `reference` the reference (desired) output
+	///
+	/// Pre: the network must be pre-activated, i.e. the output layer must be
+	/// initialized by forward propagation
+	pub fn run(net: &mut network::Network, reference: &Signal) {
+		for ilayer in (1..net.n_layers()).rev() {
+		}
 	}
 }
 
