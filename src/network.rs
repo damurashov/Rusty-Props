@@ -2,23 +2,20 @@
 ///
 
 pub use std;
-use std::{assert, iter::Iterator};
+use std::{assert, iter::Iterator, vec::Vec, iter::Flatten, iter::FlatMap, iter::Map};
 use crate::algorithm::Signal;
 
-#[derive(Clone)]
-pub struct Edge {
-	/// Weight
-	pub w: f32,
-	/// Bias
-	pub b: f32,
-}
+type Edge = Vec<Vec<f32>>;
 
 pub struct Layer {
-	edges: std::vec::Vec<Edge>,
 	/// Weighed sum from the previous layer
-	z: std::vec::Vec<f32>,
+	z: Vec<f32>,
 	/// Activation function of the weighed sum
-	a: std::vec::Vec<f32>,
+	a: Vec<f32>,
+	/// Weigts
+	w: Edge,
+	/// Biases
+	b: Edge,
 }
 
 /// Stores network weights and the results of intermediate calculations such as
@@ -60,21 +57,28 @@ impl Network {
 
 		for nnodes in geometry {
 			let mut layer = Layer{
-				edges: std::vec::Vec::new(),
-				a: std::vec::Vec::new(),
-				z: std::vec::Vec::new(),
+				a: Vec::new(),
+				z: Vec::new(),
+				w: Vec::new(),
+				b: Vec::new(),
 			};
-			layer.edges.reserve_exact(size_prev * nnodes);
-			layer.edges.resize(size_prev * nnodes, Edge{
-				w: f32::NAN,
-				b: f32::NAN,
-			});
 			layer.a.reserve_exact(*nnodes);
 			layer.a.resize(*nnodes, f32::NAN);
+			layer.w.reserve_exact(size_prev);
+			layer.w.resize(size_prev, Vec::new());
+			layer.b.reserve_exact(size_prev);
+			layer.b.resize(size_prev, Vec::new());
 
 			if size_prev != 0 {
 				layer.z.reserve_exact(*nnodes);
 				layer.z.resize(*nnodes, f32::NAN);
+
+				for i in 0..*nnodes {
+					layer.w[i].reserve_exact(*nnodes);
+					layer.w[i].resize(*nnodes, f32::NAN);
+					layer.b[i].reserve_exact(*nnodes);
+					layer.b[i].resize(*nnodes, f32::NAN);
+				}
 			}
 
 			network.layers.push(layer);
@@ -85,37 +89,25 @@ impl Network {
 	}
 
 	#[inline]
-	fn edge_index(&self, ilayer_to: usize, ifrom: usize, ito: usize) -> usize {
-		self.layer_len(ilayer_to - 1) * ito + ifrom
-	}
-
-	#[inline]
 	pub fn init_input_layer(&mut self, signal: &Signal) {
 		assert!(self.layers.len() > 0);
 		self.layers[0].a = signal.to_vec();
 	}
 
-	/// Returns ref. to an edge
-	///
-	/// `ifrom` - id of the edge's origin node
-	/// `ito` - id of the edge's destination node
-	///
-	/// Expects layers of level 1 and higher (counting from 0)
-	///
 	#[inline]
-	pub fn edge(&self, ilayer: usize, ifrom: usize, ito: usize) -> &Edge {
-		assert!(ilayer > 0);
-		let iedge = self.edge_index(ilayer, ifrom, ito);
-
-		&self.layers[ilayer].edges[iedge]
+	/// Returns (WEIGHT, BIAS) pair
+	pub fn edge_coef_wb(&self, ilayer: usize, ifrom: usize, ito: usize) -> (f32, f32) {
+		(self.w(ilayer, ifrom, ito), self.b(ilayer, ifrom, ito))
 	}
 
 	#[inline]
-	pub fn edge_mut(&mut self, ilayer: usize, ifrom: usize, ito: usize) -> &mut Edge {
-		assert!(ilayer > 0);
-		let iedge = self.edge_index(ilayer, ifrom, ito);
+	pub fn w(&self, ilayer: usize, ifrom: usize, ito: usize) -> f32 {
+		self.layers[ilayer].w[ifrom][ito]
+	}
 
-		&mut self.layers[ilayer].edges[iedge]
+	#[inline]
+	pub fn b(&self, ilayer: usize, ifrom: usize, ito: usize) -> f32 {
+		self.layers[ilayer].b[ifrom][ito]
 	}
 
 	/// Access activation value on a specified node and layer
@@ -131,6 +123,16 @@ impl Network {
 	}
 
 	#[inline]
+	pub fn set_w(&mut self, ilayer: usize, ifrom: usize, ito: usize, val: f32) {
+		self.layers[ilayer].w[ifrom][ito] = val
+	}
+
+	#[inline]
+	pub fn set_b(&mut self, ilayer: usize, ifrom: usize, ito: usize, val: f32) {
+		self.layers[ilayer].b[ifrom][ito] = val
+	}
+
+	#[inline]
 	pub fn set_a(&mut self, ilayer: usize, inode: usize, val: f32) {
 		self.layers[ilayer].a[inode] = val;
 	}
@@ -141,9 +143,15 @@ impl Network {
 	}
 
 	#[inline]
-	pub fn edges_iter_mut(&mut self, ilayer: usize) -> impl Iterator<Item = &'_ mut Edge> {
-		assert!(ilayer < self.n_layers());
-		self.layers[ilayer].edges.iter_mut()
+	pub fn edge_index_iter(&self, ilayer: usize) -> impl Iterator<Item=(usize, usize)> {
+		assert!(ilayer > 0 && ilayer < self.n_layers());
+		let len_from = self.layer_len(ilayer - 1);
+		let len_to = self.layer_len(ilayer);
+
+		(0..len_from)
+			.flat_map(move |ifrom| {
+				(0..len_to).map(move |ito| (ifrom, ito))
+			})
 	}
 }
 
