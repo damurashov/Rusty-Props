@@ -144,19 +144,28 @@ impl BackPropagation {
 		0.0f32
 	}
 
+	fn dzdw(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
+		0.0f32
+	}
+
+	fn dcdz(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
+		0.0f32
+	}
+
 	fn dcdw(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &network::Network, reference: &Signal) -> f32 {
 		let mut ret = self.net_cache.w(ilayer, ifrom, ito);
 
 		if ret.is_nan() {
-			if ilayer == self.net_cache.n_layers() - 1 {
-				let ref_val = reference[ito];
-				let val = net.z(ilayer, ito);
-				ret = (self.dcdz_output)(ref_val, val);
-			} else {
+			let dcdz = if ilayer == self.net_cache.n_layers() - 1 {
+				let ref_z = reference[ito];
 				let z = net.z(ilayer, ito);
-				ret = self.dcda(ilayer, ito, net, reference) * (self.dadz)(z);
+
+				(self.dcdz_output)(ref_z, z)
+			} else {
+				self.dcdz(ilayer, ito, net, reference)
 			};
 
+			ret = dcdz * self.dzdw(ilayer, ito, net, reference);
 			self.net_cache.set_w(ilayer, ifrom, ito, ret);
 
 			ret
