@@ -177,13 +177,11 @@ impl BackPropagation {
 	/// initialized by forward propagation
 	pub fn run(&mut self, net: &mut network::Network, reference: &Signal) {
 		for ilayer in (1..net.n_layers()).rev() {
-			for ifrom in 0..net.layer_len(ilayer - 1) {
-				for ito in 0..net.layer_len(ilayer) {
-					let w = net.w(ilayer, ifrom, ito) - self.dcdw(ilayer, ifrom, ito, net, reference);
-					net.set_w(ilayer, ifrom, ito, w);
-					let b = net.b(ilayer, ifrom, ito) - self.dcdb(ilayer, ifrom, ito, net, reference);
-					net.set_b(ilayer, ifrom, ito, b);
-				}
+			for (ifrom, ito) in net.edge_index_iter(ilayer) {
+				let w = net.w(ilayer, ifrom, ito) - self.dcdw(ilayer, ifrom, ito, net, reference);
+				net.set_w(ilayer, ifrom, ito, w);
+				let b = net.b(ilayer, ifrom, ito) - self.dcdb(ilayer, ifrom, ito, net, reference);
+				net.set_b(ilayer, ifrom, ito, b);
 			}
 		}
 	}
