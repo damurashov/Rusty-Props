@@ -13,9 +13,9 @@ pub fn network_init_random(net: &mut network::Network) {
 	let gen = Uniform::from(0.0f32..1.0f32);
 
 	for ilayer in 0..net.n_layers() {
-		for edge in net.edges_iter_mut(ilayer) {
-			edge.w = gen.sample(&mut rng);
-			edge.b = gen.sample(&mut rng);
+		for (ifrom, ito) in net.edge_index_iter(ilayer) {
+			net.set_w(ilayer, ifrom, ito, gen.sample(&mut rng));
+			net.set_b(ilayer, ifrom, ito, gen.sample(&mut rng));
 		}
 	}
 }
@@ -47,8 +47,8 @@ impl ForwardPropagation {
 			let mut sum = 0.0f32;
 
 			for ifrom in 0..net.layer_len(ilayer - 1) {
-				let edge = net.edge(ilayer, ifrom, ito);
-				sum += net.a(ilayer - 1, ifrom) * edge.w + edge.b;
+				let (w, b) = net.edge_coef_wb(ilayer, ifrom, ito);
+				sum += net.a(ilayer - 1, ifrom) * w + b;
 			}
 
 			net.set_z(ilayer, ito, sum);
@@ -157,9 +157,10 @@ impl BackPropagation {
 		for ilayer in (1..net.n_layers()).rev() {
 			for ifrom in 0..net.layer_len(ilayer - 1) {
 				for ito in 0..net.layer_len(ilayer) {
-					let edge = net.edge_mut(ilayer, ifrom, ito);
-					edge.w -= self.dcdw(ilayer, ifrom, ito);
-					edge.b -= self.dcdb(ilayer, ifrom, ito);
+					let w = net.w(ilayer, ifrom, ito) - self.dcdw(ilayer, ifrom, ito);
+					net.set_w(ilayer, ifrom, ito, w);
+					let b = net.w(ilayer, ifrom, ito) - self.dcdw(ilayer, ifrom, ito);
+					net.set_b(ilayer, ifrom, ito, w);
 				}
 			}
 		}
