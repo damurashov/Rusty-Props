@@ -44,13 +44,6 @@ impl Network {
 		self.layers[ilayer].a.len()
 	}
 
-	#[inline]
-	pub fn layer_mut(&mut self, ilayer: usize) -> &mut Layer {
-		assert!(ilayer < self.n_layers());
-
-		&mut self.layers[ilayer]
-	}
-
 	/// Allocates a chunk in memory for a network with a specified geometry,
 	/// i.e. number of nodes on each layer.
 	///
