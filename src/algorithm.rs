@@ -4,6 +4,7 @@
 use crate::network;
 use std::{assert, vec::Vec};
 use rand::distributions::{Distribution, Uniform};
+use network::Network;
 
 pub type Signal = std::vec::Vec<f32>;
 
@@ -164,7 +165,7 @@ impl BackPropagation {
 		}
 	}
 
-	fn dcdb(&mut self, ilayer: usize, ifrom: usize, ito: usize) -> f32 {
+	fn dcdb(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
 		0.0f32
 	}
 
@@ -180,8 +181,8 @@ impl BackPropagation {
 				for ito in 0..net.layer_len(ilayer) {
 					let w = net.w(ilayer, ifrom, ito) - self.dcdw(ilayer, ifrom, ito, net, reference);
 					net.set_w(ilayer, ifrom, ito, w);
-					let b = net.w(ilayer, ifrom, ito) - self.dcdw(ilayer, ifrom, ito, net, reference);
-					net.set_b(ilayer, ifrom, ito, w);
+					let b = net.b(ilayer, ifrom, ito) - self.dcdb(ilayer, ifrom, ito, net, reference);
+					net.set_b(ilayer, ifrom, ito, b);
 				}
 			}
 		}
