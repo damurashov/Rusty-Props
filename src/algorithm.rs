@@ -139,14 +139,29 @@ impl BackPropagation {
 		}
 	}
 
+	fn dcdw(&mut self, ilayer: usize, ifrom: usize, ito: usize) -> f32 {
+		0.0f32
+	}
+
+	fn dcdb(&mut self, ilayer: usize, ifrom: usize, ito: usize) -> f32 {
+		0.0f32
+	}
+
 	/// Train the net using reference output
 	/// `network`: the ANN instance
 	/// `reference` the reference (desired) output
 	///
 	/// Pre: the network must be pre-activated, i.e. the output layer must be
 	/// initialized by forward propagation
-	pub fn run(net: &mut network::Network, reference: &Signal) {
+	pub fn run(&mut self, net: &mut network::Network, reference: &Signal) {
 		for ilayer in (1..net.n_layers()).rev() {
+			for ifrom in 0..net.layer_len(ilayer - 1) {
+				for ito in 0..net.layer_len(ilayer) {
+					let edge = net.edge_mut(ilayer, ifrom, ito);
+					edge.w -= self.dcdw(ilayer, ifrom, ito);
+					edge.b -= self.dcdb(ilayer, ifrom, ito);
+				}
+			}
 		}
 	}
 }
