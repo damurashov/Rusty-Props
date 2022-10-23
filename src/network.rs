@@ -73,7 +73,7 @@ impl Network {
 				layer.z.reserve_exact(*nnodes);
 				layer.z.resize(*nnodes, f32::NAN);
 
-				for i in 0..*nnodes {
+				for i in 0..size_prev {
 					layer.w[i].reserve_exact(*nnodes);
 					layer.w[i].resize(*nnodes, f32::NAN);
 					layer.b[i].reserve_exact(*nnodes);
