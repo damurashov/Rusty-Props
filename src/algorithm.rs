@@ -148,6 +148,10 @@ impl BackPropagation {
 		0.0f32
 	}
 
+	fn dzdb(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
+		0.0f32
+	}
+
 	fn dcdz(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
 		let mut ret = self.net_cache.z(ilayer, inode);
 
@@ -188,7 +192,16 @@ impl BackPropagation {
 	}
 
 	fn dcdb(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
-		0.0
+		let mut ret = self.net_cache.b(ilayer, ifrom, ito);
+
+		if ret.is_nan() {
+			let dcdz = self.dcdz(ilayer, ito, net, reference);
+			let dzdb = self.dzdb(ilayer, ito, net, reference);
+			ret = dcdz * dzdb;
+			self.net_cache.set_b(ilayer, ifrom, ito, ret);
+		}
+
+		ret
 	}
 
 	/// Train the net using reference output
