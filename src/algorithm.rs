@@ -174,25 +174,25 @@ impl BackPropagation {
 	}
 
 	/// Calculates partial derivative C by z
-	fn dcdz(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
-		let mut ret = self.net_cache.z(ilayer, inode);
+	fn dcdz(&mut self, izlayer: usize, iz: usize, net: &Network, reference: &Signal) -> f32 {
+		let mut ret = self.net_cache.z(izlayer, iz);
 
 		if ret.is_nan() {
-			let z = net.z(ilayer, inode);
+			let z = net.z(izlayer, iz);
 
-			ret = if ilayer == net.n_layers() - 1 {
-				let ref_z = reference[inode];
+			ret = if izlayer == net.n_layers() - 1 {
+				let ref_z = reference[iz];
 
 				(self.dcdz_output)(ref_z, z)
 			} else {
-				let dcda = self.dcda(ilayer, inode, net, reference);
+				let dcda = self.dcda(izlayer, iz, net, reference);
 				let dadz = (self.dadz)(z);
 
 				dcda * dadz
 			}
 		}
 
-		self.net_cache.set_z(ilayer, inode, ret);
+		self.net_cache.set_z(izlayer, iz, ret);
 
 		ret
 	}
