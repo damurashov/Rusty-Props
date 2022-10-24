@@ -152,15 +152,19 @@ impl BackPropagation {
 		0.0f32
 	}
 
+	/// Calculates a partial derivative C by w
 	fn dcdw(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &network::Network, reference: &Signal) -> f32 {
 		let mut ret = self.net_cache.w(ilayer, ifrom, ito);
 
+		// There is nothing in the cache, calculate
 		if ret.is_nan() {
+			// The output layer dc/dz is calculated w/ the use of the user-provided cost function derivative.
 			let dcdz = if ilayer == self.net_cache.n_layers() - 1 {
 				let ref_z = reference[ito];
 				let z = net.z(ilayer, ito);
 
 				(self.dcdz_output)(ref_z, z)
+			// Other dc/dz are decomposed (according to the chain rule) as a mult. dc/dz * dz/dw
 			} else {
 				self.dcdz(ilayer, ito, net, reference)
 			};
