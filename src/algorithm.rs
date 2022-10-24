@@ -104,6 +104,23 @@ mod test_forward_propagation {
 	}
 }
 
+/// Step function
+fn activation_step(z: f32) -> f32 {
+	if z < 0.0 {
+		0.0
+	} else {
+		z
+	}
+}
+
+fn activation_step_d(z: f32) -> f32 {
+	if z < 0.0 {
+		0.0
+	} else {
+		1.0
+	}
+}
+
 /// Cost function derivative for the output layer
 /// arg. 1: desired output layer value
 /// arg. 2: factual output layer value
