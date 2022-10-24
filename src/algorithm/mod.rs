@@ -1,3 +1,4 @@
+pub mod func;
 /// Neural network activation and training algorithms.
 ///
 
@@ -101,24 +102,6 @@ mod test_forward_propagation {
 			activate: step_function,
 		};
 		forward_propagation.run(&mut network, &signal);
-	}
-}
-
-/// Step function
-fn activation_step(z: f32) -> f32 {
-	if z < 0.0 {
-		0.0
-	} else {
-		z
-	}
-}
-
-/// da/dz
-fn activation_step_d(z: f32) -> f32 {
-	if z < 0.0 {
-		0.0
-	} else {
-		1.0
 	}
 }
 
@@ -281,5 +264,11 @@ mod test_back_propagation {
 		let geometry = vec![128, 16, 32, 4];
 		let network = Network::from_geometry(&geometry);
 		let _back_propagation = BackPropagation::from_network(&network, dcdz_output_stub, dadz_stub, 0.01);
+	}
+
+	#[test]
+	fn run() {
+		let geometry = vec![128, 16, 32, 4];
+		let network = Network::from_geometry(&geometry);
 	}
 }
