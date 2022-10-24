@@ -135,7 +135,7 @@ impl BackPropagation {
 	}
 
 	fn dzda(&mut self, ialayer: usize, ia: usize, iz: usize, net: &Network, reference: &Signal) -> f32 {
-		0.0
+		net.w(ialayer + 1, ia, iz)
 	}
 
 	/// Returns partial derivative C by a
