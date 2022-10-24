@@ -259,7 +259,7 @@ mod test_back_propagation {
 	}
 
 	#[test]
-	fn test_back_propagation_construction() {
+	fn construction() {
 		let geometry = vec![128, 16, 32, 4];
 		let network = Network::from_geometry(&geometry);
 		let _back_propagation = BackPropagation::from_network(&network, dcdz_output_stub, dadz_stub, 0.01);
