@@ -144,12 +144,16 @@ impl BackPropagation {
 		0.0f32
 	}
 
-	/// Retunrs partial derivative z by w
-	fn dzdw(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
-		self.net_cache.a(ilayer - 1, inode)
+	/// Returns partial derivative z by w
+	///
+	/// `ilayer` - layer of w
+	/// `ifrom` - id of the edge's originating node
+	fn dzdw(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
+		net.a(ilayer - 1, ifrom)
 	}
 
-	fn dzdb(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
+	#[inline]
+	fn dzdb(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
 		1.0
 	}
 
@@ -185,7 +189,7 @@ impl BackPropagation {
 		if ret.is_nan() {
 			// The output layer dc/dz is calculated w/ the use of the user-provided cost function derivative.
 			let dcdz = self.dcdz(ilayer, ito, net, reference);
-			let dzdw = self.dzdw(ilayer, ito, net, reference);
+			let dzdw = self.dzdw(ilayer, ifrom, ito, net, reference);
 			ret = dcdz * dzdw;
 			self.net_cache.set_w(ilayer, ifrom, ito, ret);
 		}
@@ -199,7 +203,7 @@ impl BackPropagation {
 
 		if ret.is_nan() {
 			let dcdz = self.dcdz(ilayer, ito, net, reference);
-			let dzdb = self.dzdb(ilayer, ito, net, reference);
+			let dzdb = self.dzdb(ilayer, ifrom, ito, net, reference);
 			ret = dcdz * dzdb;
 			self.net_cache.set_b(ilayer, ifrom, ito, ret);
 		}
