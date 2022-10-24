@@ -144,8 +144,9 @@ impl BackPropagation {
 		0.0f32
 	}
 
+	/// Retunrs partial derivative z by w
 	fn dzdw(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
-		0.0f32
+		self.net_cache.a(ilayer - 1, inode)
 	}
 
 	fn dzdb(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
