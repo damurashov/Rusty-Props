@@ -191,6 +191,7 @@ impl BackPropagation {
 		ret
 	}
 
+	/// Calculates a partial derivative C by b
 	fn dcdb(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
 		let mut ret = self.net_cache.b(ilayer, ifrom, ito);
 
