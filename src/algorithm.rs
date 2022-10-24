@@ -134,8 +134,30 @@ impl BackPropagation {
 		}
 	}
 
-	fn dcda(&mut self, ilayer: usize, inode: usize, net: &network::Network, reference: &Signal) -> f32 {
-		0.0f32
+	fn dzda(&mut self, ilayer: usize, ia: usize, iz: usize, net: &Network, reference: &Signal) -> f32 {
+		0.0
+	}
+
+	/// Returns partial derivative C by a
+	///
+	/// `ialayer` - index of the layer on which `a` resides
+	/// `ia` - index of `a`
+	fn dcda(&mut self, ialayer: usize, ia: usize, net: &network::Network, reference: &Signal) -> f32 {
+		let mut ret = self.net_cache.a(ialayer, ia);
+
+		if ret.is_nan() {
+			ret = 0.0;
+
+			for iz in 0..net.layer_len(ialayer + 1) {
+				let dcdz = self.dcdz(ialayer + 1, iz, net, reference);
+				let dzda = self.dzda(ialayer, ia, iz, net, reference);
+				ret += dcdz * dzda;
+			}
+		}
+
+		self.net_cache.set_a(ialayer, ia, ret);
+
+		ret
 	}
 
 	/// Returns partial derivative z by w
