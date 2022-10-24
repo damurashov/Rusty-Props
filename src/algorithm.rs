@@ -113,6 +113,7 @@ fn activation_step(z: f32) -> f32 {
 	}
 }
 
+/// da/dz
 fn activation_step_d(z: f32) -> f32 {
 	if z < 0.0 {
 		0.0
