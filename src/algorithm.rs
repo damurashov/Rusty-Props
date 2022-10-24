@@ -164,12 +164,12 @@ impl BackPropagation {
 	///
 	/// `ilayer` - layer of w
 	/// `ifrom` - id of the edge's originating node
-	fn dzdw(&mut self, iwlayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
+	fn dzdw(&self, iwlayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
 		net.a(iwlayer - 1, ifrom)
 	}
 
 	#[inline]
-	fn dzdb(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
+	fn dzdb(&self, ilayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
 		1.0
 	}
 
