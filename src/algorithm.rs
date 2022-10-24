@@ -149,7 +149,7 @@ impl BackPropagation {
 	}
 
 	fn dzdb(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
-		0.0f32
+		1.0
 	}
 
 	/// Calculates partial derivative C by z
