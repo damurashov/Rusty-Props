@@ -80,17 +80,8 @@ impl ForwardPropagation {
 
 #[cfg(test)]
 mod test_forward_propagation {
-	use super::{ForwardPropagation, network_init_random, Signal};
+	use super::{ForwardPropagation, network_init_random, Signal, func::activation_step};
 	use crate::network;
-
-	#[inline]
-	fn step_function(x: f32) -> f32 {
-		if x < 0.0f32 {
-			0.0f32
-		} else {
-			x
-		}
-	}
 
 	#[test]
 	fn test_forward_propagation() {
@@ -99,7 +90,7 @@ mod test_forward_propagation {
 		let mut signal = Signal::new();
 		network_init_random(&mut network);
 		let forward_propagation = ForwardPropagation {
-			activate: step_function,
+			activate: activation_step,
 		};
 		forward_propagation.run(&mut network, &signal);
 	}
