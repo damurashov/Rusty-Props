@@ -152,6 +152,7 @@ impl BackPropagation {
 		0.0f32
 	}
 
+	/// Calculates partial derivative C by z
 	fn dcdz(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
 		let mut ret = self.net_cache.z(ilayer, inode);
 
