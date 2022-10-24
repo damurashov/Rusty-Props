@@ -140,7 +140,7 @@ impl BackPropagation {
 		}
 	}
 
-	fn dcda(&mut self, ilayer: usize, ito: usize, net: &network::Network, reference: &Signal) -> f32 {
+	fn dcda(&mut self, ilayer: usize, inode: usize, net: &network::Network, reference: &Signal) -> f32 {
 		0.0f32
 	}
 
@@ -149,7 +149,26 @@ impl BackPropagation {
 	}
 
 	fn dcdz(&mut self, ilayer: usize, inode: usize, net: &Network, reference: &Signal) -> f32 {
-		0.0f32
+		let mut ret = self.net_cache.z(ilayer, inode);
+
+		if ret.is_nan() {
+			let z = net.z(ilayer, inode);
+
+			ret = if ilayer == net.n_layers() - 1 {
+				let ref_z = reference[inode];
+
+				(self.dcdz_output)(ref_z, z)
+			} else {
+				let dcda = self.dcda(ilayer, inode, net, reference);
+				let dadz = (self.dadz)(z);
+
+				dcda * dadz
+			}
+		}
+
+		self.net_cache.set_z(ilayer, inode, ret);
+
+		ret
 	}
 
 	/// Calculates a partial derivative C by w
@@ -159,27 +178,17 @@ impl BackPropagation {
 		// There is nothing in the cache, calculate
 		if ret.is_nan() {
 			// The output layer dc/dz is calculated w/ the use of the user-provided cost function derivative.
-			let dcdz = if ilayer == self.net_cache.n_layers() - 1 {
-				let ref_z = reference[ito];
-				let z = net.z(ilayer, ito);
-
-				(self.dcdz_output)(ref_z, z)
-			// Other dc/dz are decomposed (according to the chain rule) as a mult. dc/dz * dz/dw
-			} else {
-				self.dcdz(ilayer, ito, net, reference)
-			};
-
-			ret = dcdz * self.dzdw(ilayer, ito, net, reference);
+			let dcdz = self.dcdz(ilayer, ito, net, reference);
+			let dzdw = self.dzdw(ilayer, ito, net, reference);
+			ret = dcdz * dzdw;
 			self.net_cache.set_w(ilayer, ifrom, ito, ret);
-
-			ret
-		} else {
-			ret
 		}
+
+		ret
 	}
 
 	fn dcdb(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
-		0.0f32
+		0.0
 	}
 
 	/// Train the net using reference output
