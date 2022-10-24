@@ -134,7 +134,7 @@ impl BackPropagation {
 		}
 	}
 
-	fn dzda(&mut self, ilayer: usize, ia: usize, iz: usize, net: &Network, reference: &Signal) -> f32 {
+	fn dzda(&mut self, ialayer: usize, ia: usize, iz: usize, net: &Network, reference: &Signal) -> f32 {
 		0.0
 	}
 
