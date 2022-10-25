@@ -238,8 +238,10 @@ impl BackPropagation {
 
 #[cfg(test)]
 mod test_back_propagation {
-	use super::BackPropagation;
+	use super::{BackPropagation, network_init_random, Signal, func, ForwardPropagation};
+	use rand::distributions::{Uniform, Distribution};
 	use crate::network::Network;
+	use crate::ut;
 
 	fn dcdz_output_stub(reference: f32, actual: f32) -> f32 {
 		f32::NAN
@@ -256,9 +258,39 @@ mod test_back_propagation {
 		let _back_propagation = BackPropagation::from_network(&network, dcdz_output_stub, dadz_stub, 0.01);
 	}
 
+	/// Runs full circle, viz. forward and back propagation, to make sure it
+	/// won't fail
 	#[test]
 	fn run() {
+		// Initialize network, its input, and output (reference) signals
+
 		let geometry = vec![128, 16, 32, 4];
-		let network = Network::from_geometry(&geometry);
+		let mut network = Network::from_geometry(&geometry);
+		network_init_random(&mut network);
+		let mut rng = rand::thread_rng();
+		let gen = Uniform::from(0.0f32..1.0f32);
+		let mut signal_input = ut::signal_stub_from_network_input(&network);
+
+		for s in &mut signal_input {
+			*s = gen.sample(&mut rng);
+		}
+
+		let mut signal_output = ut::signal_stub_from_network_output(&network);
+
+		for s in &mut signal_output {
+			*s = 0.0f32;
+		}
+
+		signal_output[0] = 1.0f32;
+		let epsilon = 0.01f32;
+
+		/// Initialize forward and back propagation algorithms w/ cost and
+		/// activation functions
+		let mut back_propagation = BackPropagation::from_network(&network, func::cost_mse_d, func::activation_step_d, epsilon);
+		let forward_propagation = ForwardPropagation{activate: func::activation_step};
+
+		/// Run fwd. and back propagation algorithms
+		forward_propagation.run(&mut network, &signal_input);
+		back_propagation.run(&mut network, &signal_output);
 	}
 }
