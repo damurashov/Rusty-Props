@@ -1,6 +1,6 @@
-pub mod func;
 /// Neural network activation and training algorithms.
-///
+
+pub mod func;
 
 use crate::network;
 use std::{assert, vec::Vec};
