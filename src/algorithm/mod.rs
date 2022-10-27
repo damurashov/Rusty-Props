@@ -236,9 +236,9 @@ impl BackPropagation {
 	pub fn run(&mut self, net: &mut network::Network, reference: &Signal) {
 		for ilayer in (1..net.n_layers()).rev() {
 			for (ifrom, ito) in net.edge_index_iter(ilayer) {
-				let w = net.w(ilayer, ifrom, ito) - self.dcdw(ilayer, ifrom, ito, net, reference);
+				let w = net.w(ilayer, ifrom, ito) - self.dcdw(ilayer, ifrom, ito, net, reference) * self.epsilon;
 				net.set_w(ilayer, ifrom, ito, w);
-				let b = net.b(ilayer, ifrom, ito) - self.dcdb(ilayer, ifrom, ito, net, reference);
+				let b = net.b(ilayer, ifrom, ito) - self.dcdb(ilayer, ifrom, ito, net, reference) * self.epsilon;
 				net.set_b(ilayer, ifrom, ito, b);
 			}
 		}
@@ -301,7 +301,6 @@ mod test_back_propagation {
 					assert!(!back_propagation.net_cache.w(ilayer, ifrom, inode).is_nan());
 					assert!(!back_propagation.net_cache.b(ilayer, ifrom, inode).is_nan());
 				}
-				// TODO bug epsilon!
 			}
 		}
 	}
