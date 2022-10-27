@@ -84,7 +84,7 @@ mod test_forward_propagation {
 
 	#[test]
 	fn test_forward_propagation() {
-		let geometry = vec![128, 16, 32, 4];
+		let geometry = vec![2, 4, 2, 4];
 		let mut network = network::Network::from_geometry(&geometry);
 		// Initialize random input
 		let mut signal = ut::signal_stub_from_network_input(&network);
