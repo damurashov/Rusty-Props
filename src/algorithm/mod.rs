@@ -60,7 +60,7 @@ impl ForwardPropagation {
 	fn network_update_layer_activate(&self, net: &mut network::Network, ilayer: usize) {
 		assert!(ilayer > 0);
 
-		for i in 1..net.layer_len(ilayer) {
+		for i in 0..net.layer_len(ilayer) {
 			let z = net.z(ilayer, i);
 			let a = (self.activate)(z);
 			net.set_a(ilayer, i, a);
