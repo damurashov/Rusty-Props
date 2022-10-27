@@ -280,7 +280,7 @@ mod test_back_propagation {
 		let mut signal_output = ut::signal_stub_from_network_output(&network);
 		let epsilon = 0.01f32;
 		ut::vec_init_random(&mut signal_input, 0.0f32, 1.0f32);
-		ut::vec_init_random(&mut signal_input, 0.0f32, 1.0f32);
+		ut::vec_init_random(&mut signal_output, 0.0f32, 1.0f32);
 
 		/// Initialize forward and back propagation algorithms w/ cost and
 		/// activation functions
