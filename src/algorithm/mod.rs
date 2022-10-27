@@ -276,22 +276,11 @@ mod test_back_propagation {
 		let geometry = vec![128, 16, 32, 4];
 		let mut network = Network::from_geometry(&geometry);
 		network_init_random(&mut network);
-		let mut rng = rand::thread_rng();
-		let gen = Uniform::from(0.0f32..1.0f32);
 		let mut signal_input = ut::signal_stub_from_network_input(&network);
-
-		for s in &mut signal_input {
-			*s = gen.sample(&mut rng);
-		}
-
 		let mut signal_output = ut::signal_stub_from_network_output(&network);
-
-		for s in &mut signal_output {
-			*s = 0.0f32;
-		}
-
-		signal_output[0] = 1.0f32;
 		let epsilon = 0.01f32;
+		ut::vec_init_random(&mut signal_input, 0.0f32, 1.0f32);
+		ut::vec_init_random(&mut signal_input, 0.0f32, 1.0f32);
 
 		/// Initialize forward and back propagation algorithms w/ cost and
 		/// activation functions
