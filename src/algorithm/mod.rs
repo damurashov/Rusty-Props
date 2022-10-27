@@ -88,12 +88,7 @@ mod test_forward_propagation {
 		let mut network = network::Network::from_geometry(&geometry);
 		// Initialize random input
 		let mut signal = ut::signal_stub_from_network_input(&network);
-		let mut rng = rand::thread_rng();
-		let gen = Uniform::from(0.0f32..1.0f32);
-
-		for s in &mut signal {
-			*s = gen.sample(&mut rng);
-		}
+		ut::vec_init_random(&mut signal, 0.0f32, 1.0f32);
 
 		network_init_random(&mut network);
 		let forward_propagation = ForwardPropagation {
