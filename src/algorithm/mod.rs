@@ -2,7 +2,7 @@
 
 pub mod func;
 
-use crate::network;
+use crate::{network, ut};
 use std::{assert, vec::Vec};
 use rand::distributions::{Distribution, Uniform};
 use network::Network;
@@ -79,19 +79,33 @@ impl ForwardPropagation {
 
 #[cfg(test)]
 mod test_forward_propagation {
-	use super::{ForwardPropagation, network_init_random, Signal, func::activation_step};
-	use crate::network;
+	use super::{ForwardPropagation, network_init_random, Signal, func::activation_step, Uniform, Distribution};
+	use crate::{network, ut};
 
 	#[test]
 	fn test_forward_propagation() {
 		let geometry = vec![128, 16, 32, 4];
 		let mut network = network::Network::from_geometry(&geometry);
-		let mut signal = Signal::new();
+		// Initialize random input
+		let mut signal = ut::signal_stub_from_network_input(&network);
+		let mut rng = rand::thread_rng();
+		let gen = Uniform::from(0.0f32..1.0f32);
+
+		for s in &mut signal {
+			*s = gen.sample(&mut rng);
+		}
+
 		network_init_random(&mut network);
 		let forward_propagation = ForwardPropagation {
 			activate: activation_step,
 		};
 		forward_propagation.run(&mut network, &signal);
+		let ilayer = network.n_layers() - 1;
+		let layer_len = network.layer_len(ilayer);
+
+		for inode in 0..layer_len {
+			assert!(network.a(ilayer, inode).is_nan());
+		}
 	}
 }
 
