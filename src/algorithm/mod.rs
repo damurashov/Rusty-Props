@@ -99,7 +99,7 @@ mod test_forward_propagation {
 		let layer_len = network.layer_len(ilayer);
 
 		for inode in 0..layer_len {
-			assert!(network.a(ilayer, inode).is_nan());
+			assert!(!network.a(ilayer, inode).is_nan());
 		}
 	}
 }
