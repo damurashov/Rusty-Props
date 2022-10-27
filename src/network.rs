@@ -156,11 +156,11 @@ impl Network {
 }
 
 #[cfg(test)]
-mod test {
+mod test_network {
 	use super::Network;
 
 	#[test]
-	fn test_network_construction() {
+	fn construction() {
 		let geometry = vec![128, 16, 32, 4];
 		let network = Network::from_geometry(&geometry);
 
