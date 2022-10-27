@@ -273,7 +273,7 @@ mod test_back_propagation {
 	fn run() {
 		// Initialize network, its input, and output (reference) signals
 
-		let geometry = vec![128, 16, 32, 4];
+		let geometry = vec![2, 2, 2];
 		let mut network = Network::from_geometry(&geometry);
 		network_init_random(&mut network);
 		let mut signal_input = ut::signal_stub_from_network_input(&network);
@@ -290,5 +290,17 @@ mod test_back_propagation {
 		/// Run fwd. and back propagation algorithms
 		forward_propagation.run(&mut network, &signal_input);
 		back_propagation.run(&mut network, &signal_output);
+
+		for ilayer in 1..back_propagation.net_cache.n_layers() {
+			for inode in 0..back_propagation.net_cache.layer_len(ilayer) {
+				assert!(!back_propagation.net_cache.a(ilayer, inode).is_nan());
+				assert!(!back_propagation.net_cache.z(ilayer, inode).is_nan());
+
+				for ifrom in 0..back_propagation.net_cache.layer_len(ilayer - 1) {
+					assert!(back_propagation.net_cache.w(ilayer, ifrom, inode).is_nan());
+					assert!(back_propagation.net_cache.b(ilayer, ifrom, inode).is_nan());
+				}
+			}
+		}
 	}
 }
