@@ -23,12 +23,12 @@ pub fn network_init_random(net: &mut network::Network) {
 }
 
 #[cfg(test)]
-mod tests_module_functions {
+mod test_module_functions {
 	use crate::network::Network;
 	use super::network_init_random;
 
 	#[test]
-	fn test_network_random_initialization() {
+	fn network_random_initialization() {
 		let geometry = vec![128, 16, 32, 4];
 		let mut network = Network::from_geometry(&geometry);
 		network_init_random(&mut network);
@@ -83,7 +83,7 @@ mod test_forward_propagation {
 	use crate::{network, ut};
 
 	#[test]
-	fn test_forward_propagation() {
+	fn run() {
 		let geometry = vec![2, 4, 2, 4];
 		let mut network = network::Network::from_geometry(&geometry);
 		// Initialize random input
