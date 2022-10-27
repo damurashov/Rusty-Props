@@ -293,13 +293,15 @@ mod test_back_propagation {
 
 		for ilayer in 1..back_propagation.net_cache.n_layers() {
 			for inode in 0..back_propagation.net_cache.layer_len(ilayer) {
-				assert!(!back_propagation.net_cache.a(ilayer, inode).is_nan());
+				assert!(ilayer == back_propagation.net_cache.n_layers() - 1
+					|| !back_propagation.net_cache.a(ilayer, inode).is_nan());  // NAN -> LAST LAYER, or !LAST_LAYER -> !NAN
 				assert!(!back_propagation.net_cache.z(ilayer, inode).is_nan());
 
 				for ifrom in 0..back_propagation.net_cache.layer_len(ilayer - 1) {
-					assert!(back_propagation.net_cache.w(ilayer, ifrom, inode).is_nan());
-					assert!(back_propagation.net_cache.b(ilayer, ifrom, inode).is_nan());
+					assert!(!back_propagation.net_cache.w(ilayer, ifrom, inode).is_nan());
+					assert!(!back_propagation.net_cache.b(ilayer, ifrom, inode).is_nan());
 				}
+				// TODO bug epsilon!
 			}
 		}
 	}
