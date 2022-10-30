@@ -1,4 +1,4 @@
-use std::{error::Error, env::current_dir, path::Path, fs::File, fs::create_dir, io::Write};
+use std::{error::Error, env::current_dir, path::Path, fs::File, fs::create_dir, io::Write, process::Command};
 use tokio;
 use reqwest;
 
@@ -13,7 +13,7 @@ mod dataset {
 	];
 
 	pub async fn fetch() -> Result<(), Box<dyn Error>> {
-		let mut path_base = Path::new(current_dir().unwrap().to_str().unwrap()).join("data");  // `current_dir/data`
+		let path_base = Path::new(current_dir().unwrap().to_str().unwrap()).join("data");  // `current_dir/data`
 
 		for url in MNIST_URLS {
 			let file_name = Path::new(url).file_name().unwrap();
