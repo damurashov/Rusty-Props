@@ -12,7 +12,10 @@ mod dataset {
 		"http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz",
 	];
 
+	/// Fetches the dataset
 	pub async fn fetch() -> Result<(), Box<dyn Error>> {
+		// The `mnist` package "expects" the dataset to reside in `data/` directory in the project's root
+		// https://docs.rs/mnist/latest/mnist/#setup
 		let path_base = Path::new(current_dir().unwrap().to_str().unwrap()).join("data");  // `current_dir/data`
 
 		for url in MNIST_URLS {
@@ -28,7 +31,6 @@ mod dataset {
 
 		Ok(())
 	}
-
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
