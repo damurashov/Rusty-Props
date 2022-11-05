@@ -1,6 +1,7 @@
-use std::{error::Error, env::current_dir, path::Path, fs::File, fs::create_dir, io::Write, process::Command};
+use std::{error::Error, env::current_dir, path::{Path, PathBuf}, fs::File, fs::create_dir, io::Write, process::Command};
 use tokio;
 use reqwest;
+use lazy_static::lazy_static;
 
 mod dataset {
 	use super::*;
@@ -12,15 +13,17 @@ mod dataset {
 		"http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz",
 	];
 
+	lazy_static! {
+		static ref PATH_BASE: PathBuf = Path::new(current_dir().unwrap().to_str().unwrap()).join("data");
+	}
+
 	/// Fetches the dataset
 	pub async fn fetch() -> Result<(), Box<dyn Error>> {
 		// The `mnist` package "expects" the dataset to reside in `data/` directory in the project's root
 		// https://docs.rs/mnist/latest/mnist/#setup
-		let path_base = Path::new(current_dir().unwrap().to_str().unwrap()).join("data");  // `current_dir/data`
-
 		for url in MNIST_URLS {
 			let file_name = Path::new(url).file_name().unwrap();
-			let mut file_path = path_base.clone();
+			let mut file_path = PATH_BASE.clone();
 			create_dir(&file_path);
 			file_path.push(&file_name);
 			let mut file = File::create(&file_path)?;
