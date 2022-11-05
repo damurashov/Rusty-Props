@@ -21,6 +21,10 @@ use reqwest;
 use lazy_static::lazy_static;
 use libflate;
 
+/// MNIST dataset is distributed as 4 gzip archives: {test, traininig} x {images, labels}
+
+/// The following contains functions that download those archives, unpack them into `data/` directory, and deflate
+/// gzips. Those components are essential for `mnist` library.
 mod dataset {
 	use super::*;
 
