@@ -9,7 +9,7 @@ use mnist::{Mnist, MnistBuilder};
 #[cfg(test)]
 mod test_mnist_load {
 	use super::{Mnist, MnistBuilder};
-	use std::{env::current_dir, thread::current};
+	use std::{env::current_dir};
 	const IMG_SIZE: usize = 28 * 28;
 	const TRAINING_SET_LEN: usize = 100;
 	const TEST_SET_LEN: usize = 10;
