@@ -1,3 +1,8 @@
+/// MNIST is an annotated dataset of handwritten digits.
+/// http://yann.lecun.com/exdb/mnist/
+///
+/// This module trains the network using this dataset.
+
 use mnist::{Mnist, MnistBuilder};
 
 /// Waterprobing. An attempt to load and unpack MNIST dataset
