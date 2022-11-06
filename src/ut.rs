@@ -52,3 +52,16 @@ pub fn network_serialize_into_file(network: &Network, fname: &str) -> Result<(),
 		Err(e) => Err(std::io::Error::new(std::io::ErrorKind::Other, e))
 	}
 }
+
+#[cfg(test)]
+mod test_serialization {
+	use super::*;
+
+	/// Tests w
+	#[test]
+	fn serialize() {
+		let geometry = vec![128, 16, 32, 4];
+		let network = Network::from_geometry(&geometry);
+		network_serialize_into_file(&network, "network.bin");
+	}
+}
