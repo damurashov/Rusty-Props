@@ -38,6 +38,18 @@ pub struct Network {
 }
 
 impl Network {
+	/// Provides std-native representation
+	pub fn as_layer_tuple_vec(&self) -> Vec<LayerTuple> {
+		let mut ret = Vec::new();
+		ret.reserve_exact(self.n_layers());
+
+		for layer in &self.layers {
+			ret.push(layer.as_tuple());
+		}
+
+		ret
+	}
+
 	/// Number of layers in the network
 	#[inline]
 	pub fn n_layers(&self) -> usize {
