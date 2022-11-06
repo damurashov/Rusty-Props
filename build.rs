@@ -87,7 +87,7 @@ mod dataset {
 	/// and unpacks the archives with datasets.
 	pub fn dir_is_exists() -> bool {
 		match metadata(&*PATH_BASE) {
-			Ok(_) => true,
+			Ok(md) => md.is_dir(),
 			Err(_) => false,
 		}
 	}
