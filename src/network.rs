@@ -25,6 +25,15 @@ impl Layer {
 	pub fn as_tuple(&self) -> LayerTuple {
 		(&self.z, &self.a, &self.w, &self.b)
 	}
+
+	pub fn from_layer_tuple(layer_tuple: LayerTuple) -> Layer {
+		Layer {
+			z: layer_tuple.0.clone(),
+			a: layer_tuple.1.clone(),
+			w: layer_tuple.2.clone(),
+			b: layer_tuple.3.clone(),
+		}
+	}
 }
 
 /// Stores network weights and the results of intermediate calculations such as
@@ -48,6 +57,21 @@ impl Network {
 		}
 
 		ret
+	}
+
+	/// Constructs a network from a set of weights. A part of deserialization
+	/// process.
+	pub fn from_layer_tuple_vec(layer_tuple_vec: &Vec<LayerTuple>) -> Network {
+		let geometry = layer_tuple_vec.iter()
+			.map(|layer_tuple| layer_tuple.0.len())
+			.collect::<Vec<usize>>();
+		let layers = layer_tuple_vec
+			.iter()
+			.map(|layer_tuple| Layer::from_layer_tuple(*layer_tuple))
+			.collect::<Vec<Layer>>();
+		let network = Network{layers};
+
+		network
 	}
 
 	/// Number of layers in the network
@@ -83,7 +107,7 @@ impl Network {
 				w: Vec::new(),
 				b: Vec::new(),
 			};
-			// TODO: optimize input and output layers
+			// TODO: optimize input and output layers. Note the necessity to ensure size consistency when performing (de)serialization
 			layer.a.reserve_exact(*nnodes);
 			layer.a.resize(*nnodes, f32::NAN);
 			layer.w.reserve_exact(size_prev);
