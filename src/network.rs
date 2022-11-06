@@ -83,6 +83,7 @@ impl Network {
 				w: Vec::new(),
 				b: Vec::new(),
 			};
+			// TODO: optimize input and output layers
 			layer.a.reserve_exact(*nnodes);
 			layer.a.resize(*nnodes, f32::NAN);
 			layer.w.reserve_exact(size_prev);
