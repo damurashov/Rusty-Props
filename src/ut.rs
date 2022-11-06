@@ -40,6 +40,7 @@ pub fn vec_init_random<T: rand::distributions::uniform::SampleUniform>(vec: &mut
 	}
 }
 
+/// Packs a network into a binary file
 pub fn network_serialize_into_file(network: &Network, fname: &str) -> Result<(), std::io::Error> {
 	let path_out = Path::new(fname);
 	let mut file_out = File::create(&path_out)?;
