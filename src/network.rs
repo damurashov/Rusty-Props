@@ -5,13 +5,14 @@ pub use std;
 use std::{assert, iter::Iterator, vec::Vec, iter::Flatten, iter::FlatMap, iter::Map};
 use crate::algorithm::Signal;
 
-type Edge = Vec<Vec<f32>>;
+pub type Edge = Vec<Vec<f32>>;
+pub type Coeff = Vec<f32>;
 
 pub struct Layer {
 	/// Weighed sum from the previous layer
-	z: Vec<f32>,
+	z: Coeff,
 	/// Activation function of the weighed sum
-	a: Vec<f32>,
+	a: Coeff,
 	/// Weigts
 	w: Edge,
 	/// Biases
@@ -30,7 +31,7 @@ pub struct Network {
 
 impl Network {
 	/// Underlying representation
-	pub fn layers(&self) -> &Vec<Layer> {
+	pub fn as_layers(&self) -> &Vec<Layer> {
 		&self.layers
 	}
 
