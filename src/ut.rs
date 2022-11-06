@@ -43,9 +43,11 @@ pub fn vec_init_random<T: rand::distributions::uniform::SampleUniform>(vec: &mut
 pub fn network_serialize_into_file(network: &Network, fname: &str) -> Result<(), std::io::Error> {
 	let path_out = Path::new(fname);
 	let mut file_out = File::create(&path_out)?;
-	let mut stream_out = BufWriter::new(&mut file_out);
+	let stream_out = BufWriter::new(&mut file_out);
 	let layer_tuple_vec = network.as_layer_tuple_vec();
-	bincode::serialize_into(stream_out, &layer_tuple_vec);
 
-	Ok(())
+	match bincode::serialize_into(stream_out, &layer_tuple_vec) {
+		Ok(_) => Ok(()),
+		Err(e) => Err(std::io::Error::new(std::io::ErrorKind::Other, e))
+	}
 }
