@@ -7,6 +7,7 @@ use std::{error::Error,
 	fs:: {
 		File,
 		create_dir,
+		metadata,
 	},
 	io::{
 		Write,
@@ -81,12 +82,23 @@ mod dataset {
 			copy(&mut gz_decoder, &mut stream_out);
 		}
 	}
+
+	/// Checks as to whether './data` directory exists. If doesn't, downloads
+	/// and unpacks the archives with datasets.
+	pub fn dir_is_exists() -> bool {
+		match metadata(&*PATH_BASE) {
+			Ok(_) => true,
+			Err(_) => false,
+		}
+	}
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-	let mut rt = tokio::runtime::Runtime::new().unwrap();
-	rt.block_on(async {dataset::fetch().await})?;
-	dataset::unpack();
+	if !dataset::dir_is_exists() {
+		let mut rt = tokio::runtime::Runtime::new().unwrap();
+		rt.block_on(async {dataset::fetch().await})?;
+		dataset::unpack();
+	}
 
 	Ok(())
 }
