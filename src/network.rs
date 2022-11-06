@@ -7,6 +7,7 @@ use crate::algorithm::Signal;
 
 pub type Edge = Vec<Vec<f32>>;
 pub type Coeff = Vec<f32>;
+pub type LayerTuple<'a> = (&'a Coeff, &'a Coeff, &'a Edge, &'a Edge);
 
 pub struct Layer {
 	/// Weighed sum from the previous layer
@@ -17,6 +18,13 @@ pub struct Layer {
 	w: Edge,
 	/// Biases
 	b: Edge,
+}
+
+impl Layer {
+	/// Provides native representation, e.g. for serialization libraries
+	pub fn as_tuple(&self) -> LayerTuple {
+		(&self.z, &self.a, &self.w, &self.b)
+	}
 }
 
 /// Stores network weights and the results of intermediate calculations such as
@@ -30,11 +38,6 @@ pub struct Network {
 }
 
 impl Network {
-	/// Underlying representation
-	pub fn as_layers(&self) -> &Vec<Layer> {
-		&self.layers
-	}
-
 	/// Number of layers in the network
 	#[inline]
 	pub fn n_layers(&self) -> usize {
