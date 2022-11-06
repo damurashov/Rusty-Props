@@ -1,4 +1,4 @@
-/// Basic representations pertaining to a neural network.
+
 ///
 
 pub use std;
@@ -29,6 +29,11 @@ pub struct Network {
 }
 
 impl Network {
+	/// Underlying representation
+	pub fn layers(&self) -> &Vec<Layer> {
+		&self.layers
+	}
+
 	/// Number of layers in the network
 	#[inline]
 	pub fn n_layers(&self) -> usize {
