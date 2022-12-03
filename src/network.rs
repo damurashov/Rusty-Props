@@ -8,6 +8,7 @@ use crate::algorithm::Signal;
 pub type Edge = Vec<Vec<f32>>;
 pub type Coeff = Vec<f32>;
 pub type LayerTuple<'a> = (&'a Coeff, &'a Coeff, &'a Edge, &'a Edge);
+pub type OwnedLayerTuple = (Coeff, Coeff, Edge, Edge);
 
 pub struct Layer {
 	/// Weighed sum from the previous layer
@@ -61,13 +62,15 @@ impl Network {
 
 	/// Constructs a network from a set of weights. A part of deserialization
 	/// process.
-	pub fn from_layer_tuple_vec(layer_tuple_vec: &Vec<LayerTuple>) -> Network {
+	pub fn from_layer_tuple_vec(layer_tuple_vec: &Vec<OwnedLayerTuple>) -> Network {
 		let geometry = layer_tuple_vec.iter()
 			.map(|layer_tuple| layer_tuple.0.len())
 			.collect::<Vec<usize>>();
 		let layers = layer_tuple_vec
 			.iter()
-			.map(|layer_tuple| Layer::from_layer_tuple(*layer_tuple))
+			.map(|layer_tuple| Layer::from_layer_tuple(
+				(&layer_tuple.0, &layer_tuple.1, &layer_tuple.2, &layer_tuple.3)
+			))
 			.collect::<Vec<Layer>>();
 		let network = Network{layers};
 
