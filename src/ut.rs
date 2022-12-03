@@ -1,12 +1,9 @@
 use crate::algorithm::Signal;
-use crate::network::Network;
+use crate::network::{Network, Coeff, Edge};
 use std::{
 	vec::Vec,
 	fs::File,
-	io::{
-		Write,
-		BufWriter
-	},
+	io::{Write, BufWriter, BufReader},
 	path::Path,
 };
 use rand::distributions::{Distribution, Uniform};
@@ -51,6 +48,17 @@ pub fn network_serialize_into_file(network: &Network, fname: &str) -> Result<(),
 		Ok(_) => Ok(()),
 		Err(e) => Err(std::io::Error::new(std::io::ErrorKind::Other, e))
 	}
+}
+
+// /// Unpacks binary file into `Network` object
+pub fn network_deserialize_from_file(fname: &str) -> Result<Network, Box<dyn std::error::Error>> {
+	type OwnedLayerTuple = Vec<(Coeff, Coeff, Edge, Edge)>;
+	let path_in = Path::new(fname);
+	let mut file_in = File::open(&path_in)?;
+	let stream_in = BufReader::new(&mut file_in);
+	let deserialized = bincode::deserialize_from::<_, OwnedLayerTuple>(stream_in)?;
+
+	Ok(Network::from_layer_tuple_vec(&deserialized))
 }
 
 #[cfg(test)]
