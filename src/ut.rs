@@ -78,3 +78,11 @@ mod test_serialization {
 		assert!(network_clone == network)
 	}
 }
+
+pub fn vecf32_float_safe_is_eq(lhs: &Coeff, rhs: &Coeff) -> bool{
+	if lhs.len() == rhs.len() {
+		lhs.iter().zip(rhs.iter()).fold(true, |acc, item| (item.0 - item.1).abs() < f32::EPSILON)
+	} else {
+		false
+	}
+}
