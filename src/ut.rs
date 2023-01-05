@@ -64,12 +64,17 @@ pub fn network_deserialize_from_file(fname: &str) -> Result<Network, Box<dyn std
 #[cfg(test)]
 mod test_serialization {
 	use super::*;
+	use crate::algorithm;
 
 	/// Tests w
 	#[test]
 	fn serialize() {
-		let geometry = vec![128, 16, 32, 4];
-		let network = Network::from_geometry(&geometry);
+		let geometry = vec![2, 2, 2, 2];
+		let mut network = Network::from_geometry(&geometry);
+		algorithm::network_init_random(&mut network);
 		network_serialize_into_file(&network, "network.bin");
+		let network_clone = network_deserialize_from_file("network.bin").unwrap();
+
+		assert!(network_clone == network)
 	}
 }
