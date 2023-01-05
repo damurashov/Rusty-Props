@@ -4,6 +4,7 @@
 pub use std;
 use std::{assert, iter::Iterator, vec::Vec, iter::Flatten, iter::FlatMap, iter::Map};
 use crate::algorithm::Signal;
+use core::cmp;
 
 pub type Edge = Vec<Vec<f32>>;
 pub type Coeff = Vec<f32>;
@@ -219,6 +220,31 @@ mod test_network {
 
 		for i in 0..geometry.len() {
 			assert_eq!(network.layer_len(i), geometry[i]);
+		}
+	}
+}
+
+impl cmp::PartialEq for Network {
+	fn eq(&self, other: &Self) -> bool {
+		let geometry = self.geometry();
+
+		if geometry == other.geometry() {
+			let mut res = true;
+
+			for i in 0..geometry.len() {
+				res = res && self.layers[i].a == other.layers[i].a;
+				res = res && self.layers[i].z == other.layers[i].z;
+				res = res && self.layers[i].w == other.layers[i].w;
+				res = res && self.layers[i].b == other.layers[i].b;
+
+				if !res {
+					break
+				}
+			}
+
+			res
+		} else {
+			false
 		}
 	}
 }
