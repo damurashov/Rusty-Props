@@ -48,6 +48,10 @@ pub struct Network {
 }
 
 impl Network {
+	pub fn geometry(&self) -> Vec<usize> {
+		(0..self.layers.len()).map(|layer_id| self.layers[layer_id].a.len()).collect()
+	}
+
 	/// Provides std-native representation
 	pub fn as_layer_tuple_vec(&self) -> Vec<LayerTuple> {
 		let mut ret = Vec::new();
