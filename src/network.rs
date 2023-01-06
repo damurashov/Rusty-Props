@@ -5,6 +5,7 @@ pub use std;
 use std::{assert, iter::Iterator, vec::Vec, iter::Flatten, iter::FlatMap, iter::Map};
 use crate::algorithm::Signal;
 use core::cmp;
+use crate::ut;
 
 pub type Edge = Vec<Vec<f32>>;
 pub type Coeff = Vec<f32>;
@@ -232,10 +233,12 @@ impl cmp::PartialEq for Network {
 			let mut res = true;
 
 			for i in 0..geometry.len() {
-				res = res && self.layers[i].a == other.layers[i].a;
-				res = res && self.layers[i].z == other.layers[i].z;
-				res = res && self.layers[i].w == other.layers[i].w;
-				res = res && self.layers[i].b == other.layers[i].b;
+				res = res && ut::vecf32_float_safe_is_eq(&self.layers[i].a, &other.layers[i].a);
+				res = res && ut::vecf32_float_safe_is_eq(&self.layers[i].z, &other.layers[i].z);
+				res = res && self.layers[i].b.iter().zip(other.layers[i].b.iter())
+					.fold(false, |acc, item| acc && ut::vecf32_float_safe_is_eq(&item.0, &item.1));
+				res = res && self.layers[i].w.iter().zip(other.layers[i].w.iter())
+					.fold(false, |acc, item| acc && ut::vecf32_float_safe_is_eq(&item.0, &item.1));
 
 				if !res {
 					break
