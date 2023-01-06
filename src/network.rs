@@ -236,9 +236,9 @@ impl cmp::PartialEq for Network {
 				res = res && ut::vecf32_float_safe_is_eq(&self.layers[i].a, &other.layers[i].a);
 				res = res && ut::vecf32_float_safe_is_eq(&self.layers[i].z, &other.layers[i].z);
 				res = res && self.layers[i].b.iter().zip(other.layers[i].b.iter())
-					.fold(false, |acc, item| acc && ut::vecf32_float_safe_is_eq(&item.0, &item.1));
+					.fold(true, |acc, item| acc && ut::vecf32_float_safe_is_eq(&item.0, &item.1));
 				res = res && self.layers[i].w.iter().zip(other.layers[i].w.iter())
-					.fold(false, |acc, item| acc && ut::vecf32_float_safe_is_eq(&item.0, &item.1));
+					.fold(true, |acc, item| acc && ut::vecf32_float_safe_is_eq(&item.0, &item.1));
 
 				if !res {
 					break
