@@ -73,9 +73,10 @@ mod test_serialization {
 		let mut network = Network::from_geometry(&geometry);
 		algorithm::network_init_random(&mut network);
 		network_serialize_into_file(&network, "network.bin");
-		let network_clone = network_deserialize_from_file("network.bin").unwrap();
-
-		assert!(network_clone == network)
+		let mut network_clone = network_deserialize_from_file("network.bin").unwrap();
+		assert!(network_clone == network);
+		network_clone.set_w(1, 0, 0, network.w(1, 0, 0) + 1.0f32);
+		assert!(network_clone != network);
 	}
 }
 
