@@ -79,9 +79,14 @@ mod test_serialization {
 	}
 }
 
-pub fn vecf32_float_safe_is_eq(lhs: &Coeff, rhs: &Coeff) -> bool{
+/// Compares float vectors ignoring NaN operations
+pub fn vecf32_float_safe_is_eq(lhs: &Coeff, rhs: &Coeff) -> bool {
 	if lhs.len() == rhs.len() {
-		lhs.iter().zip(rhs.iter()).fold(true, |acc, item| (item.0 - item.1).abs() < f32::EPSILON)
+		lhs.iter().zip(rhs.iter())
+			.fold(true, |acc, item| {
+				acc && ((item.0 - item.1).abs() <= f32::EPSILON || item.0.is_nan()
+					|| item.1.is_nan())
+			})
 	} else {
 		false
 	}
