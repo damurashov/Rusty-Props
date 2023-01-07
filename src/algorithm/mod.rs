@@ -88,7 +88,13 @@ impl ForwardPropagation {
 
 #[cfg(test)]
 mod test_forward_propagation {
-    use super::{ForwardPropagation, network_init_random, Signal, func::activation_step, Uniform, Distribution};
+    use super::{
+        ForwardPropagation,
+        network_init_random,
+        Signal,
+        func::activation_step,
+        Uniform, Distribution
+    };
     use crate::{network, ut};
 
     #[test]
@@ -133,7 +139,10 @@ impl BackPropagation {
     // TODO dcda
     // TODO dzda
 
-    pub fn from_network(net: &network::Network, dcdz_output: Dcdz, dadz: Dadz, epsilon: f32) -> BackPropagation {
+    pub fn from_network(net: &network::Network,
+            dcdz_output: Dcdz,
+            dadz: Dadz, epsilon: f32
+    ) -> BackPropagation {
         let geometry: Vec<usize> = (0..net.n_layers()).map(|i| net.layer_len(i)).collect();
         BackPropagation {
             dcdz_output,
@@ -143,7 +152,14 @@ impl BackPropagation {
         }
     }
 
-    fn dzda(&mut self, ialayer: usize, ia: usize, iz: usize, net: &Network, reference: &Signal) -> f32 {
+    fn dzda(
+        &mut self,
+        ialayer: usize,
+        ia: usize,
+        iz: usize,
+        net: &Network,
+        reference: &Signal
+    ) -> f32 {
         net.w(ialayer + 1, ia, iz)
     }
 
@@ -151,7 +167,13 @@ impl BackPropagation {
     ///
     /// `ialayer` - index of the layer on which `a` resides
     /// `ia` - index of `a`
-    fn dcda(&mut self, ialayer: usize, ia: usize, net: &network::Network, reference: &Signal) -> f32 {
+    fn dcda(
+        &mut self,
+        ialayer: usize,
+        ia: usize,
+        net: &network::Network,
+        reference: &Signal
+    ) -> f32 {
         let mut ret = self.net_cache.a(ialayer, ia);
 
         if ret.is_nan() {
@@ -173,17 +195,37 @@ impl BackPropagation {
     ///
     /// `ilayer` - layer of w
     /// `ifrom` - id of the edge's originating node
-    fn dzdw(&self, iwlayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
+    fn dzdw(
+        &self,
+        iwlayer: usize,
+        ifrom: usize,
+        ito: usize,
+        net: &Network,
+        reference: &Signal
+    ) -> f32 {
         net.a(iwlayer - 1, ifrom)
     }
 
     #[inline]
-    fn dzdb(&self, ilayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
+    fn dzdb(
+        &self,
+        ilayer: usize,
+        ifrom: usize,
+        ito: usize,
+        net: &Network,
+        reference: &Signal
+    ) -> f32 {
         1.0
     }
 
     /// Calculates partial derivative C by z
-    fn dcdz(&mut self, izlayer: usize, iz: usize, net: &Network, reference: &Signal) -> f32 {
+    fn dcdz(
+        &mut self,
+        izlayer: usize,
+        iz: usize,
+        net: &Network,
+        reference: &Signal
+    ) -> f32 {
         let mut ret = self.net_cache.z(izlayer, iz);
 
         if ret.is_nan() {
@@ -207,7 +249,14 @@ impl BackPropagation {
     }
 
     /// Calculates a partial derivative C by w
-    fn dcdw(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &network::Network, reference: &Signal) -> f32 {
+    fn dcdw(
+        &mut self,
+        ilayer: usize,
+        ifrom: usize,
+        ito: usize,
+        net: &network::Network,
+        reference: &Signal
+    ) -> f32 {
         let mut ret = self.net_cache.w(ilayer, ifrom, ito);
 
         // There is nothing in the cache, calculate
@@ -223,7 +272,14 @@ impl BackPropagation {
     }
 
     /// Calculates a partial derivative C by b
-    fn dcdb(&mut self, ilayer: usize, ifrom: usize, ito: usize, net: &Network, reference: &Signal) -> f32 {
+    fn dcdb(
+        &mut self,
+        ilayer: usize,
+        ifrom: usize,
+        ito: usize,
+        net: &Network,
+        reference: &Signal
+    ) -> f32 {
         let mut ret = self.net_cache.b(ilayer, ifrom, ito);
 
         if ret.is_nan() {
@@ -245,9 +301,11 @@ impl BackPropagation {
     pub fn run(&mut self, net: &mut network::Network, reference: &Signal) {
         for ilayer in (1..net.n_layers()).rev() {
             for (ifrom, ito) in net.edge_index_iter(ilayer) {
-                let w = net.w(ilayer, ifrom, ito) - self.dcdw(ilayer, ifrom, ito, net, reference) * self.epsilon;
+                let w = net.w(ilayer, ifrom, ito)
+                    - self.dcdw(ilayer, ifrom, ito, net, reference) * self.epsilon;
                 net.set_w(ilayer, ifrom, ito, w);
-                let b = net.b(ilayer, ifrom, ito) - self.dcdb(ilayer, ifrom, ito, net, reference) * self.epsilon;
+                let b = net.b(ilayer, ifrom, ito)
+                    - self.dcdb(ilayer, ifrom, ito, net, reference) * self.epsilon;
                 net.set_b(ilayer, ifrom, ito, b);
             }
         }
@@ -273,7 +331,8 @@ mod test_back_propagation {
     fn construction() {
         let geometry = vec![128, 16, 32, 4];
         let network = Network::from_geometry(&geometry);
-        let _back_propagation = BackPropagation::from_network(&network, dcdz_output_stub, dadz_stub, 0.01);
+        let _back_propagation = BackPropagation::from_network(&network,
+            dcdz_output_stub, dadz_stub, 0.01);
     }
 
     /// Runs full circle, viz. forward and back propagation, to make sure it
