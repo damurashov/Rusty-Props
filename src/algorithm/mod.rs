@@ -352,8 +352,7 @@ mod test_back_propagation {
         ut::vec_init_random(&mut signal_input, 0.0f32, 1.0f32);
         ut::vec_init_random(&mut signal_output, 0.0f32, 1.0f32);
 
-        /// Initialize forward and back propagation algorithms w/ cost and
-        /// activation functions
+        // Initialize forward and back propagation algorithms w/ cost and activation functions
         let mut back_propagation = BackPropagation::from_network(&network, func::cost_mse_d, func::activation_step_d, epsilon);
         let forward_propagation = ForwardPropagation{activate: func::activation_step};
 
