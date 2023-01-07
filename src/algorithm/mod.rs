@@ -299,6 +299,8 @@ impl BackPropagation {
     /// Pre: the network must be pre-activated, i.e. the output layer must be
     /// initialized by forward propagation
     pub fn run(&mut self, net: &mut network::Network, reference: &Signal) {
+        self.net_cache.reset();
+
         for ilayer in (1..net.n_layers()).rev() {
             for (ifrom, ito) in net.edge_index_iter(ilayer) {
                 let w = net.w(ilayer, ifrom, ito)
