@@ -13,11 +13,20 @@ pub type Signal = std::vec::Vec<f32>;
 pub fn network_init_random(net: &mut network::Network) {
     let mut rng = rand::thread_rng();
     let gen = Uniform::from(0.0f32..1.0f32);
+    network_init_with_generator(net, &mut || gen.sample(&mut rng));
+}
 
+/// Initializes weights and biases of a network with a constant value
+pub fn network_init_with_value(net: &mut network::Network, val: f32) {
+    network_init_with_generator(net, &mut || val);
+}
+
+/// Initializes the network with a provided generator.
+fn network_init_with_generator(net: &mut network::Network, generator: &mut dyn FnMut() -> f32) {
     for ilayer in 1..net.n_layers() {
         for (ifrom, ito) in net.edge_index_iter(ilayer) {
-            net.set_w(ilayer, ifrom, ito, gen.sample(&mut rng));
-            net.set_b(ilayer, ifrom, ito, gen.sample(&mut rng));
+            net.set_w(ilayer, ifrom, ito, generator());
+            net.set_b(ilayer, ifrom, ito, generator());
         }
     }
 }
