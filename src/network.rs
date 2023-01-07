@@ -208,6 +208,21 @@ impl Network {
                 (0..len_to).map(move |ito| (ifrom, ito))
             })
     }
+
+    pub fn reset(&mut self) {
+        for layer in &mut self.layers {
+            layer.a.resize(layer.a.len(), f32::NAN);
+            layer.z.resize(layer.z.len(), f32::NAN);
+
+            for w in layer.w.iter_mut().flat_map(|edge| edge.iter_mut()) {
+                *w = f32::NAN;
+            }
+
+            for b in layer.b.iter_mut().flat_map(|edge| edge.iter_mut()) {
+                *b = f32::NAN;
+            }
+        }
+    }
 }
 
 #[cfg(test)]
