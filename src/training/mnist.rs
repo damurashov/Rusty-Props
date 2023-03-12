@@ -70,7 +70,8 @@ pub fn main() {
 
     const TRAINING_SET_LEN: usize = 2000;
     const TEST_SET_LEN: usize = 100;
-    const NETWORK_GEOMETRY: [usize; 4] = [IMG_SIZE, 16, 8, 10];
+    const OUTPUT_NEURONS_NUMBER: usize = 10;
+    const NETWORK_GEOMETRY: [usize; 4] = [IMG_SIZE, 16, 8, OUTPUT_NEURONS_NUMBER];
     const NETWORK_FILE: &str = "network.bin";
     let args: Vec<String> = args().collect();
     let mut ibegin_img = 0i32;
