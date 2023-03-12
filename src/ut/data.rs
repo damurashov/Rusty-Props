@@ -1,46 +1,75 @@
 pub use mnist;
+use core::ops::Index;
 
 pub type Signal = std::vec::Vec<f32>;
 
 const MNIST_IMAGE_SIZE: usize = 28 * 28;
+const MNIST_OUTPUT_LAYER_SIZE: usize = 10;  // Mnist is a handwritten digits annotated database, 10 digits
 
-/// `D` - data type, payload that is used for training
-/// `M` - metadatat type, annotation associated w/ the payload
+/// `M` - metadatata (label) type, annotation associated w/ the payload
 ///
 /// No boundary check functionality is implied.
-pub trait Dataset<'a, T, M>
+pub trait SignalInitialization
 {
-    fn training_data(&'a self, at: usize) -> T;
-    fn training_metadata(&'a self, at: usize) -> M;
+    fn copy_training_input_signal(&self, image_index: usize,
+        signal: &mut Signal);
+    fn copy_training_output_signal(&self, image_index: usize,
+        signal: &mut Signal);
 
-    fn testing_data(&'a self, at: usize) -> T {
-        self.training_data(at)
+    fn copy_testing_input_signal(&self, image_index: usize,
+            signal: &mut Signal) {
+        self.copy_training_input_signal(image_index, signal)
     }
 
-    fn testing_metadata(&'a self, at: usize) -> M {
-        self.testing_metadata(at)
+    fn copy_testing_output_signal(&self, image_index: usize,
+            signal: &mut Signal) {
+        self.copy_training_output_signal(image_index, signal);
     }
 }
 
-impl<'a> Dataset<'a, &'a [u8], u8> for mnist::Mnist
+trait CopyConvertIntoSignal {
+    fn copy_convert_into_signal(&self, signal: &mut Signal);
+}
+
+trait Length {
+    fn length(&self) -> usize;
+}
+
+/// Implementation for array-like objects (slices, vectors, arrays)
+impl<T> CopyConvertIntoSignal for T
+where
+    T: Index<usize> + Length + ?Sized,
+    <T as Index<usize>>::Output: Into<f32> + Copy
 {
-    fn training_data(&self, at: usize) -> &[u8] {
-        let start_position = at * MNIST_IMAGE_SIZE;
+    fn copy_convert_into_signal(&self, signal: &mut Signal) {
+        signal.reserve_exact(self.length());
+        signal.resize(self.length(), f32::NAN);
 
-        &self.trn_img[start_position..start_position + MNIST_IMAGE_SIZE]
+        for i in 0..self.length() {
+            signal[i] = self[i].into();
+        }
+    }
+}
+
+impl<T> Length for [T] {
+    fn length(&self) -> usize {
+        self.len()
+    }
+}
+
+impl SignalInitialization for mnist::Mnist {
+    fn copy_training_input_signal(&self, image_index: usize,
+            signal: &mut Signal) {
+        let start_position = image_index * MNIST_IMAGE_SIZE;
+        self.trn_img[start_position..start_position + MNIST_IMAGE_SIZE]
+            .copy_convert_into_signal(signal);
     }
 
-    fn training_metadata(&self, at: usize) -> u8 {
-        self.trn_lbl[at]
-    }
-
-    fn testing_data(& self, at: usize) -> &[u8] {
-        let start_position = at * MNIST_IMAGE_SIZE;
-
-        &self.tst_lbl[start_position..start_position + MNIST_IMAGE_SIZE]
-    }
-
-    fn testing_metadata(&'a self, at: usize) -> u8 {
-        self.tst_lbl[at]
+    fn copy_training_output_signal(&self, image_index: usize,
+            signal: &mut Signal) {
+        let position = self.trn_lbl[image_index] as usize;
+        signal.reserve_exact(MNIST_OUTPUT_LAYER_SIZE);
+        signal.resize(MNIST_OUTPUT_LAYER_SIZE, 0.0f32);
+        signal[position] = 1.0;
     }
 }
