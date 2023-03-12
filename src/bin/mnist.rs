@@ -61,10 +61,19 @@ mod test_mnist_load {
     }
 }
 
-fn train(net: &mut network::Network, mnist: &Mnist, ibegin_training_image: usize) {
+/// Trains network using back propagation algorithm. It can resume previously
+fn train_network(net: &mut network::Network, mnist: &Mnist, ibegin_training_image: usize) {
 }
 
-fn test(net: &mut network::Network, mnist: &Mnist) {
+/// Runs forward propagation on a network, measures its performance.
+fn test_network(net: &mut network::Network, mnist: &Mnist) {
+}
+
+fn get_network() -> network::Network {
+    match ut::network_deserialize_from_file(NETWORK_FILE) {
+        Err(_) => network::Network::from_geometry(&NETWORK_GEOMETRY.into()),
+        Ok(net) => net,
+    }
 }
 
 pub fn main() {
@@ -74,19 +83,14 @@ pub fn main() {
 
     let args: Vec<String> = args().collect();
     let mut ibegin_img = 0i32;
-    let mut network = {
-        if args.len() == 1 {
-            network::Network::from_geometry(&NETWORK_GEOMETRY.into())
-        } else {
-            ibegin_img = args[1].parse::<i32>().unwrap();
-            ut::network_deserialize_from_file(NETWORK_FILE).unwrap()
-        }
-    };
     let mnist = mnist_load(TRAINING_SET_LEN, TEST_SET_LEN);
+    let starting_image_index = args[1].parse::<i32>().unwrap();  // If true, there will be attempt to load an existing network
+    let should_run_recognition = starting_image_index < 0;
+    let mut network = get_network();
 
-    if ibegin_img < 0 {
-        test(&mut network, &mnist);
+    if should_run_recognition {
+        test_network(&mut network, &mnist);
     } else {
-        train(&mut network, &mnist, ibegin_img as usize);
+        train_network(&mut network, &mnist, starting_image_index as usize);
     }
 }
