@@ -1,5 +1,7 @@
 pub use mnist;
 
+pub type Signal = std::vec::Vec<f32>;
+
 const MNIST_IMAGE_SIZE: usize = 28 * 28;
 
 /// `D` - data type, payload that is used for training
