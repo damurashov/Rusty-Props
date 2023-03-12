@@ -9,7 +9,7 @@ const MNIST_OUTPUT_LAYER_SIZE: usize = 10;  // Mnist is a handwritten digits ann
 /// `M` - metadatata (label) type, annotation associated w/ the payload
 ///
 /// No boundary check functionality is implied.
-pub trait SignalInitialization
+pub trait Dataset
 {
     fn copy_training_input_signal(&self, image_index: usize,
         signal: &mut Signal);
@@ -65,7 +65,7 @@ impl<T> Length for [T] {
 ///
 /// MNIST dataset is an annotated dataset of handwritten digits.
 /// More on that here: https://en.wikipedia.org/wiki/MNIST_database
-impl SignalInitialization for mnist::Mnist {
+impl Dataset for mnist::Mnist {
     fn copy_training_input_signal(&self, image_index: usize,
             signal: &mut Signal) {
         let start_position = image_index * MNIST_IMAGE_SIZE;
