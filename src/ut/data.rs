@@ -27,10 +27,13 @@ pub trait SignalInitialization
     }
 }
 
+/// Helper trait for quickly initializing `Signal` instances from various types'
+/// instances
 trait CopyConvertIntoSignal {
     fn copy_convert_into_signal(&self, signal: &mut Signal);
 }
 
+/// Helper trait
 trait Length {
     fn length(&self) -> usize;
 }
@@ -51,12 +54,17 @@ where
     }
 }
 
+/// Implements length acquisition for slices
 impl<T> Length for [T] {
     fn length(&self) -> usize {
         self.len()
     }
 }
 
+/// Implements signal initialization for MNIST dataset.
+///
+/// MNIST dataset is an annotated dataset of handwritten digits.
+/// More on that here: https://en.wikipedia.org/wiki/MNIST_database
 impl SignalInitialization for mnist::Mnist {
     fn copy_training_input_signal(&self, image_index: usize,
             signal: &mut Signal) {
