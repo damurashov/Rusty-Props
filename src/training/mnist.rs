@@ -8,8 +8,10 @@ use crate::algorithm;
 use crate::network;
 use crate::ut;
 
-const IMG_SIZE: usize = 28;  // Handwritten digits, 28x28
-const N_CLASSES: usize = 10;  // 0-9
+const IMG_SIZE_BYTES: usize = 28 * 28;  // Handwritten digits, 28x28
+const OUTPUT_NEURONS_NUMBER: usize = 10;
+const NETWORK_GEOMETRY: [usize; 4] = [IMG_SIZE_BYTES, 16, 8, OUTPUT_NEURONS_NUMBER];
+const NETWORK_FILE: &str = "network.bin";
 
 fn mnist_load(training_set_length: usize, test_set_length: usize) -> Mnist {
     use std::env::current_dir;
@@ -30,7 +32,7 @@ fn mnist_load(training_set_length: usize, test_set_length: usize) -> Mnist {
 mod test_mnist_load {
     use super::{Mnist, MnistBuilder};
     use std::{env::current_dir};
-    const IMG_SIZE: usize = 28 * 28;
+    use super::IMG_SIZE_BYTES;
     const TRAINING_SET_LEN: usize = 100;
     const TEST_SET_LEN: usize = 10;
 
@@ -52,9 +54,9 @@ mod test_mnist_load {
             .test_set_length(TEST_SET_LEN.try_into().unwrap())
             .base_path(path_base_str)
             .finalize();
-        assert!(trn_img.len() == IMG_SIZE * TRAINING_SET_LEN);
+        assert!(trn_img.len() == IMG_SIZE_BYTES * TRAINING_SET_LEN);
         assert!(trn_lbl.len() == TRAINING_SET_LEN);
-        assert!(tst_img.len() == IMG_SIZE * TEST_SET_LEN);
+        assert!(tst_img.len() == IMG_SIZE_BYTES * TEST_SET_LEN);
         assert!(tst_lbl.len() == TEST_SET_LEN);
     }
 }
@@ -67,12 +69,9 @@ fn test(net: &mut network::Network, mnist: &Mnist) {
 
 pub fn main() {
     use std::env::args;
-
     const TRAINING_SET_LEN: usize = 2000;
     const TEST_SET_LEN: usize = 100;
-    const OUTPUT_NEURONS_NUMBER: usize = 10;
-    const NETWORK_GEOMETRY: [usize; 4] = [IMG_SIZE, 16, 8, OUTPUT_NEURONS_NUMBER];
-    const NETWORK_FILE: &str = "network.bin";
+
     let args: Vec<String> = args().collect();
     let mut ibegin_img = 0i32;
     let mut network = {
