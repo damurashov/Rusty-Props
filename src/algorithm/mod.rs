@@ -128,8 +128,11 @@ pub type Dcdz = fn(f32, f32) -> f32;
 pub type Dadz = fn(f32) -> f32;
 
 struct BackPropagation {
+    /// Const function
     dcdz_output: Dcdz,
+    /// Activation function
     dadz: Dadz,
+    /// Intermediate results storage
     net_cache: network::Network,
     /// Learning rate
     epsilon: f32,
@@ -143,7 +146,8 @@ impl BackPropagation {
             dcdz_output: Dcdz,
             dadz: Dadz, epsilon: f32
     ) -> BackPropagation {
-        let geometry: Vec<usize> = (0..net.n_layers()).map(|i| net.layer_len(i)).collect();
+        let geometry: Vec<usize> = (0..net.n_layers())
+            .map(|i| net.layer_len(i)).collect();
         BackPropagation {
             dcdz_output,
             dadz,
@@ -353,7 +357,9 @@ mod test_back_propagation {
         ut::vec_init_random(&mut signal_output, 0.0f32, 1.0f32);
 
         // Initialize forward and back propagation algorithms w/ cost and activation functions
-        let mut back_propagation = BackPropagation::from_network(&network, func::cost_mse_d, func::activation_step_d, epsilon);
+        let mut back_propagation = BackPropagation::from_network(&network,
+            func::cost_mse_d,
+            func::activation_step_d, epsilon);
         let forward_propagation = ForwardPropagation{activate: func::activation_step};
 
         /// Run fwd. and back propagation algorithms
