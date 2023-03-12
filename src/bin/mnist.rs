@@ -62,6 +62,7 @@ mod test_mnist_load {
 }
 
 /// Trains network using back propagation algorithm. It can resume previously
+/// started training session, if ibegin_training_image > 0
 fn train_network(net: &mut network::Network, mnist: &Mnist, ibegin_training_image: usize) {
 }
 
