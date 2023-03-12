@@ -6,8 +6,7 @@ use crate::{network, ut};
 use std::{assert, vec::Vec};
 use rand::distributions::{Distribution, Uniform};
 use network::Network;
-
-pub type Signal = std::vec::Vec<f32>;
+pub use crate::ut::data::Signal;
 
 /// Randomly initializes weights and biases of a network.
 pub fn network_init_random(net: &mut network::Network) {
@@ -380,3 +379,40 @@ mod test_back_propagation {
         }
     }
 }
+
+pub enum ActivationFunctionFamily {
+    StepFunction = 0,
+}
+
+/// Forward / derivative activation function pairs
+const ACTIVATION_FUNCTION_FAMILY_MAPPING: [(fn(f32) -> f32, fn(f32) -> f32); 1] = [
+    (func::activation_step, func::activation_step_d),
+];
+
+/// Encapsulates training / recognition profile
+struct ActivationProfile {
+    activation_function: fn(f32) -> f32,
+    activation_function_derivative: fn(f32) -> f32,
+}
+
+impl ActivationProfile {
+    fn new(activation_function_family: ActivationFunctionFamily) -> ActivationProfile {
+        let id = activation_function_family as usize;
+        ActivationProfile {
+            activation_function: ACTIVATION_FUNCTION_FAMILY_MAPPING[id].0,
+            activation_function_derivative:
+                ACTIVATION_FUNCTION_FAMILY_MAPPING[id].1,
+        }
+    }
+}
+
+// pub fn train_network_forward_propagation(net: &mut Network,
+//         activation: ActivationFunctionFamily,
+//         cost_function: fn(f32, f32) -> f32, training_rate: f32,
+//         dataset: ut::data::Dataset) {
+//     let ActivationProfile{activation_function, activation_function_derivative}
+//         = ActivationProfile::new(activation);
+//     let mut forward_propagation = ForwardPropagation{activate: activation_function};
+//     let mut back_propagation = BackPropagation::from_network(net,
+//         cost_function, activation_function_derivative, training_rate);
+// }
