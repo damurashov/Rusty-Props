@@ -4,9 +4,9 @@
 /// This module trains the network using this dataset.
 
 use mnist::{Mnist, MnistBuilder};
-use crate::algorithm;
-use crate::network;
-use crate::ut;
+use rusty_props::algorithm;
+use rusty_props::network;
+use rusty_props::ut;
 
 const IMG_SIZE_BYTES: usize = 28 * 28;  // Handwritten digits, 28x28
 const OUTPUT_NEURONS_NUMBER: usize = 10;
