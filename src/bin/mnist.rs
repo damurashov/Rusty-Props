@@ -11,9 +11,9 @@ use rusty_props::ut;
 const IMG_SIZE_BYTES: usize = 28 * 28;  // Handwritten digits, 28x28
 const OUTPUT_NEURONS_NUMBER: usize = 10;
 const NETWORK_GEOMETRY: [usize; 4] = [IMG_SIZE_BYTES, 16, 8, OUTPUT_NEURONS_NUMBER];
-const MNIST_IMAGE_SIZE: usize = 28 * 28;
 const MNIST_OUTPUT_LAYER_SIZE: usize = 10;  // Mnist is a handwritten digits annotated database, 10 digits
 
+/// Satisfies trait/crate definition requirements
 struct MnistWrapper(mnist::Mnist);
 
 /// Implements signal initialization for MNIST dataset.
@@ -23,9 +23,9 @@ struct MnistWrapper(mnist::Mnist);
 impl ut::data::Dataset for MnistWrapper {
     fn copy_training_input_signal(&self, image_index: usize,
             signal: &mut ut::data::Signal) {
-        let start_position = image_index * MNIST_IMAGE_SIZE;
+        let start_position = image_index * IMG_SIZE_BYTES;
         <[u8] as ut::data::CopyConvertIntoSignal>::copy_convert_into_signal(
-            &self.0.trn_img[start_position..start_position + MNIST_IMAGE_SIZE],
+            &self.0.trn_img[start_position..start_position + IMG_SIZE_BYTES],
             signal
         );
     }
