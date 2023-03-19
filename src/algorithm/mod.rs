@@ -406,7 +406,7 @@ impl ActivationProfile {
     }
 }
 
-pub fn train_network_forward_propagation(net: &mut Network,
+pub fn train_network_back_propagation(net: &mut Network,
         activation: ActivationFunctionFamily,
         cost_function: fn(f32, f32) -> f32, training_rate: f32,
         dataset: &impl ut::data::Dataset, on_iteration_ended_hook: fn(usize)) {
