@@ -3,7 +3,7 @@
 
 pub use std;
 use std::{assert, iter::Iterator, vec::Vec, iter::Flatten, iter::FlatMap, iter::Map};
-use crate::algorithm::Signal;
+use crate::ut::data::Signal;
 use core::cmp;
 use crate::ut;
 
@@ -147,6 +147,11 @@ impl Network {
     pub fn init_input_layer(&mut self, signal: &Signal) {
         assert!(self.layers.len() > 0);
         self.layers[0].a = signal.to_vec();
+    }
+
+    #[inline]
+    pub fn output_layer(&self) -> &Signal {
+        &self.layers[self.n_layers() - 1].z
     }
 
     #[inline]
