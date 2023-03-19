@@ -115,8 +115,7 @@ fn train_network(net: &mut network::Network, mnist: &Mnist, ibegin_training_imag
     algorithm::train_network_back_propagation(net, activation_function_family,
         cost_function, training_rate, &mnist_training_state,
         |iteration_number| {
-            println!("{} of {}",
-                iteration_number,
+            println!("{} of {}", iteration_number,
                 (&mnist_training_state as &dyn ut::data::Dataset).length());
         });
 }
