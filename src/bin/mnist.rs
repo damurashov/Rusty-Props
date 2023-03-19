@@ -38,7 +38,7 @@ impl ut::data::Dataset for MnistWrapper {
         signal[position] = 1.0;
     }
 
-    fn nimages(&self) -> usize {
+    fn length(&self) -> usize {
         self.0.trn_lbl.len()
     }
 }
