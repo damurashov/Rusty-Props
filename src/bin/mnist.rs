@@ -11,6 +11,34 @@ use rusty_props::ut;
 const IMG_SIZE_BYTES: usize = 28 * 28;  // Handwritten digits, 28x28
 const OUTPUT_NEURONS_NUMBER: usize = 10;
 const NETWORK_GEOMETRY: [usize; 4] = [IMG_SIZE_BYTES, 16, 8, OUTPUT_NEURONS_NUMBER];
+const MNIST_IMAGE_SIZE: usize = 28 * 28;
+const MNIST_OUTPUT_LAYER_SIZE: usize = 10;  // Mnist is a handwritten digits annotated database, 10 digits
+
+struct MnistWrapper(mnist::Mnist);
+
+/// Implements signal initialization for MNIST dataset.
+///
+/// MNIST dataset is an annotated dataset of handwritten digits.
+/// More on that here: https://en.wikipedia.org/wiki/MNIST_database
+impl ut::data::Dataset for MnistWrapper {
+    fn copy_training_input_signal(&self, image_index: usize,
+            signal: &mut ut::data::Signal) {
+        let start_position = image_index * MNIST_IMAGE_SIZE;
+        <[u8] as ut::data::CopyConvertIntoSignal>::copy_convert_into_signal(
+            &self.0.trn_img[start_position..start_position + MNIST_IMAGE_SIZE],
+            signal
+        );
+    }
+
+    fn copy_training_output_signal(&self, image_index: usize,
+            signal: &mut ut::data::Signal) {
+        let position = self.0.trn_lbl[image_index] as usize;
+        signal.reserve_exact(MNIST_OUTPUT_LAYER_SIZE);
+        signal.resize(MNIST_OUTPUT_LAYER_SIZE, 0.0f32);
+        signal[position] = 1.0;
+    }
+}
+
 const NETWORK_FILE: &str = "network.bin";
 
 fn mnist_load(training_set_length: usize, test_set_length: usize) -> Mnist {
