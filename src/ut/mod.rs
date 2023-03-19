@@ -30,6 +30,23 @@ pub fn signal_stub_from_network_output(network: &Network) -> Signal {
     signal_stub_from_network(network, network.n_layers() - 1)
 }
 
+/// Returns an offset corresponding to the max. value in the vector
+#[inline]
+pub fn signal_find_max_index(signal: &Signal) -> usize {
+    assert!(signal.len() > 0);
+    let max_base = signal[0];
+    signal
+        .iter()
+        .enumerate()
+        .fold((0, max_base), |(max_index, max_value), (index, value)| {
+            if *value > max_value {
+                (index, *value)
+            } else {
+                (max_index, max_value)
+            }
+        }).0
+}
+
 pub fn vec_init_random<T: rand::distributions::uniform::SampleUniform>(vec: &mut Vec<T>, from: T, to: T) {
     let mut rng = rand::thread_rng();
     let gen = Uniform::from(from..to);
