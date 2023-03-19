@@ -2,7 +2,7 @@
 
 pub mod func;
 
-use crate::{network, ut};
+use crate::{network, ut::{self, data}};
 use std::{assert, vec::Vec};
 use rand::distributions::{Distribution, Uniform};
 use network::Network;
@@ -406,13 +406,23 @@ impl ActivationProfile {
     }
 }
 
-// pub fn train_network_forward_propagation(net: &mut Network,
-//         activation: ActivationFunctionFamily,
-//         cost_function: fn(f32, f32) -> f32, training_rate: f32,
-//         dataset: ut::data::Dataset) {
-//     let ActivationProfile{activation_function, activation_function_derivative}
-//         = ActivationProfile::new(activation);
-//     let mut forward_propagation = ForwardPropagation{activate: activation_function};
-//     let mut back_propagation = BackPropagation::from_network(net,
-//         cost_function, activation_function_derivative, training_rate);
-// }
+pub fn train_network_forward_propagation(net: &mut Network,
+        activation: ActivationFunctionFamily,
+        cost_function: fn(f32, f32) -> f32, training_rate: f32,
+        dataset: &impl ut::data::Dataset, on_iteration_ended_hook: fn(usize)) {
+    let ActivationProfile{activation_function, activation_function_derivative}
+        = ActivationProfile::new(activation);
+    let mut forward_propagation = ForwardPropagation{activate: activation_function};
+    let mut back_propagation = BackPropagation::from_network(net,
+        cost_function, activation_function_derivative, training_rate);
+    let mut input_signal = ut::signal_stub_from_network_input(net);
+    let mut output_signal_reference = ut::signal_stub_from_network_output(net);
+
+    for i in 0..dataset.length() {
+        dataset.copy_training_input_signal(i, &mut input_signal);
+        forward_propagation.run(net, &input_signal);
+        dataset.copy_training_output_signal(i, &mut output_signal_reference);
+        back_propagation.run(net, &output_signal_reference);
+        on_iteration_ended_hook(i);
+    }
+}
