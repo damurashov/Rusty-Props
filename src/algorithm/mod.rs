@@ -434,3 +434,12 @@ where
         on_iteration_ended_hook(i);
     }
 }
+
+pub fn run_network_forward_propagation<'a>(net: &'a mut Network,
+        activation_function: ActivationFunction,
+        input_signal: &Signal) -> &'a Signal {
+    let forward_propagation = ForwardPropagation{activate: activation_function};
+    forward_propagation.run(net, &input_signal);
+
+    net.output_layer()
+}
