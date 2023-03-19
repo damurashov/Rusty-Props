@@ -129,6 +129,7 @@ pub type ActivationFunction = fn(f32) -> f32;
 pub type ActivationFunctionDerivative = Dadz;
 pub type CostFunctionDerivative = Dcdz;
 pub type CostFunction = fn(f32, f32) -> f32;
+pub type VectorCostFunction = for <'a> fn(&'a Signal, &'a Signal) -> f32;
 
 struct BackPropagation {
     /// Const function
