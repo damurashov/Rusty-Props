@@ -11,7 +11,7 @@ pub trait Dataset
         signal: &mut Signal);
     fn copy_training_output_signal(&self, image_index: usize,
         signal: &mut Signal);
-    fn nimages(&self) -> usize;
+    fn length(&self) -> usize;
 }
 
 /// Helper trait for quickly initializing `Signal` instances from various types'
