@@ -443,3 +443,21 @@ pub fn run_network_forward_propagation<'a>(net: &'a mut Network,
 
     net.output_layer()
 }
+
+pub fn test_network_forward_propagation<F>(net: &mut Network,
+    activation_function: ActivationFunction,
+    dataset: &impl ut::data::Dataset,
+    on_iteration_ended_hook: F,)
+where
+    for <'a> F: Fn( &'a Signal, /* Expected */ &'a Signal /* Network output */)
+{
+    let mut input_signal = ut::signal_stub_from_network_input(net);
+    let mut output_signal_reference = ut::signal_stub_from_network_output(net);
+
+    for i in 0..dataset.length() {
+        dataset.copy_training_input_signal(i, &mut input_signal);
+        run_network_forward_propagation(net, activation_function, &input_signal);
+        dataset.copy_training_output_signal(i, &mut output_signal_reference);
+        on_iteration_ended_hook(&output_signal_reference, net.output_layer());
+    }
+}
