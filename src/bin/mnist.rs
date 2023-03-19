@@ -18,6 +18,8 @@ const ACTIVATION_FUNCTION_DERIVATIVE: algorithm::ActivationFunction
     = algorithm::func::activation_step_d;
 const COST_FUNCTION_DERIVATIVE: algorithm::CostFunctionDerivative
     = algorithm::func::cost_mse_d;
+const VECTOR_COST_FUNCTION: algorithm::VectorCostFunction
+    = algorithm::func::sum_squared_errors_vector_cost_function;
 
 /// Encapsulates traininig state, so it can be resumed later
 struct MnistTrainingState<'a> {
@@ -45,11 +47,16 @@ impl ut::data::Dataset for MnistTrainingState<'_> {
         );
     }
 
+    /// Output of 10 floats each representing a digit
     fn copy_training_output_signal(&self, image_index: usize,
             signal: &mut ut::data::Signal) {
         let position = self.dataset.trn_lbl[self.offset_as_relative(image_index)] as usize;
+
+        // Initialize positions not corresponding to the current digit with 0.0
         signal.reserve_exact(MNIST_OUTPUT_LAYER_SIZE);
         signal.resize(MNIST_OUTPUT_LAYER_SIZE, 0.0f32);
+
+        // Initialize the position corresponding to the digit with 1.0
         signal[position] = 1.0;
     }
 
@@ -127,10 +134,28 @@ fn train_network(net: &mut network::Network, mnist: &Mnist, ibegin_training_imag
                 (&mnist_dataset as &dyn ut::data::Dataset).length());
         }
     );
+    // TODO: save network
 }
 
 /// Runs forward propagation on a network, measures its performance.
 fn test_network(net: &mut network::Network, mnist: &Mnist) {
+    let mut mnist_dataset = MnistTrainingState{
+        dataset: mnist,
+        base_offset: 0,
+    };
+    algorithm::test_network_forward_propagation(
+        net,
+        ACTIVATION_FUNCTION,
+        &mnist_dataset,
+        |expected_signal, actual_signal| {
+            println!("Expected digit is {}, actual digit is {},
+                vector cost function value is {}",
+                ut::signal_find_max_index(expected_signal),
+                ut::signal_find_max_index(actual_signal),
+                VECTOR_COST_FUNCTION(expected_signal, actual_signal),
+            );
+        },
+    );
 }
 
 fn make_network() -> network::Network {
