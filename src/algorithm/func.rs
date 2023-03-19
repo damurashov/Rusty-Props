@@ -1,6 +1,7 @@
 pub use crate::ut::data::Signal;
 
 /// Step function
+/// TODO: rename
 pub fn activation_step(z: f32) -> f32 {
     if z < 0.0 {
         0.0
@@ -10,6 +11,7 @@ pub fn activation_step(z: f32) -> f32 {
 }
 
 /// da/dz
+/// TODO: rename
 pub fn activation_step_d(z: f32) -> f32 {
     if z < 0.0 {
         0.0
@@ -22,6 +24,7 @@ pub fn activation_step_d(z: f32) -> f32 {
 ///
 /// `reference` - desired output, training value
 /// `value` - factual output
+/// TODO: SSE, not MSE.
 pub fn cost_mse_d(reference: f32, value: f32) -> f32 {
     -2.0f32 * reference + 2.0f32 * value
 }
