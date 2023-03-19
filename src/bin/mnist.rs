@@ -12,6 +12,12 @@ const IMG_SIZE_BYTES: usize = 28 * 28;  // Handwritten digits, 28x28
 const OUTPUT_NEURONS_NUMBER: usize = 10;
 const NETWORK_GEOMETRY: [usize; 4] = [IMG_SIZE_BYTES, 16, 8, OUTPUT_NEURONS_NUMBER];
 const MNIST_OUTPUT_LAYER_SIZE: usize = 10;  // Mnist is a handwritten digits annotated database, 10 digits
+const TRAINING_RATE: f32 = 0.0001;
+const ACTIVATION_FUNCTION: algorithm::ActivationFunction = algorithm::func::activation_step;
+const ACTIVATION_FUNCTION_DERIVATIVE: algorithm::ActivationFunction
+    = algorithm::func::activation_step_d;
+const COST_FUNCTION_DERIVATIVE: algorithm::CostFunctionDerivative
+    = algorithm::func::cost_mse_d;
 
 /// Encapsulates traininig state, so it can be resumed later
 struct MnistTrainingState<'a> {
@@ -105,19 +111,22 @@ mod test_mnist_load {
 /// Trains network using back propagation algorithm. It can resume previously
 /// started training session, if ibegin_training_image > 0
 fn train_network(net: &mut network::Network, mnist: &Mnist, ibegin_training_image: usize) {
-    let mut mnist_training_state = MnistTrainingState{
+    let mut mnist_dataset = MnistTrainingState{
         dataset: mnist,
         base_offset: ibegin_training_image,
     };
-    let activation_function_family = algorithm::ActivationFunctionFamily::StepFunction;
-    let cost_function = algorithm::func::cost_mse_d;
-    let training_rate = 0.001f32;
-    algorithm::train_network_back_propagation(net, activation_function_family,
-        cost_function, training_rate, &mnist_training_state,
+    algorithm::train_network_back_propagation(
+        net,
+        ACTIVATION_FUNCTION,
+        ACTIVATION_FUNCTION_DERIVATIVE,
+        COST_FUNCTION_DERIVATIVE,
+        TRAINING_RATE,
+        &mnist_dataset,
         |iteration_number| {
             println!("{} of {}", iteration_number,
-                (&mnist_training_state as &dyn ut::data::Dataset).length());
-        });
+                (&mnist_dataset as &dyn ut::data::Dataset).length());
+        }
+    );
 }
 
 /// Runs forward propagation on a network, measures its performance.
