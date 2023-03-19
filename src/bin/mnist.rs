@@ -37,6 +37,10 @@ impl ut::data::Dataset for MnistWrapper {
         signal.resize(MNIST_OUTPUT_LAYER_SIZE, 0.0f32);
         signal[position] = 1.0;
     }
+
+    fn nimages(&self) -> usize {
+        self.0.trn_lbl.len()
+    }
 }
 
 const NETWORK_FILE: &str = "network.bin";
@@ -98,7 +102,7 @@ fn train_network(net: &mut network::Network, mnist: &Mnist, ibegin_training_imag
 fn test_network(net: &mut network::Network, mnist: &Mnist) {
 }
 
-fn get_network() -> network::Network {
+fn make_network() -> network::Network {
     match ut::network_deserialize_from_file(NETWORK_FILE) {
         Err(_) => network::Network::from_geometry(&NETWORK_GEOMETRY.into()),
         Ok(net) => net,
@@ -111,11 +115,10 @@ pub fn main() {
     const TEST_SET_LEN: usize = 100;
 
     let args: Vec<String> = args().collect();
-    let mut ibegin_img = 0i32;
     let mnist = mnist_load(TRAINING_SET_LEN, TEST_SET_LEN);
     let starting_image_index = args[1].parse::<i32>().unwrap();  // If true, there will be attempt to load an existing network
     let should_run_recognition = starting_image_index < 0;
-    let mut network = get_network();
+    let mut network = make_network();
 
     if should_run_recognition {
         test_network(&mut network, &mnist);
