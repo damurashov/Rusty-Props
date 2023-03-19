@@ -406,10 +406,13 @@ impl ActivationProfile {
     }
 }
 
-pub fn train_network_back_propagation(net: &mut Network,
-        activation: ActivationFunctionFamily,
-        cost_function: fn(f32, f32) -> f32, training_rate: f32,
-        dataset: &impl ut::data::Dataset, on_iteration_ended_hook: fn(usize)) {
+pub fn train_network_back_propagation<F>(net: &mut Network,
+    activation: ActivationFunctionFamily,
+    cost_function: fn(f32, f32) -> f32, training_rate: f32,
+    dataset: &impl ut::data::Dataset, on_iteration_ended_hook: F)
+where
+    F: Fn(usize)
+{
     let ActivationProfile{activation_function, activation_function_derivative}
         = ActivationProfile::new(activation);
     let mut forward_propagation = ForwardPropagation{activate: activation_function};
