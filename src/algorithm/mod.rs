@@ -125,6 +125,10 @@ pub type Dcdz = fn(f32, f32) -> f32;
 /// Derivative of activation function by the weighed sum
 /// arg. 1: weighed sum value
 pub type Dadz = fn(f32) -> f32;
+pub type ActivationFunction = fn(f32) -> f32;
+pub type ActivationFunctionDerivative = Dadz;
+pub type CostFunctionDerivative = Dcdz;
+pub type CostFunction = fn(f32, f32) -> f32;
 
 struct BackPropagation {
     /// Const function
@@ -407,17 +411,18 @@ impl ActivationProfile {
 }
 
 pub fn train_network_back_propagation<F>(net: &mut Network,
-    activation: ActivationFunctionFamily,
-    cost_function: fn(f32, f32) -> f32, training_rate: f32,
-    dataset: &impl ut::data::Dataset, on_iteration_ended_hook: F)
+    activation_function: ActivationFunction,
+    activation_function_derivative: ActivationFunctionDerivative,
+    cost_function_derivative: CostFunctionDerivative,
+    training_rate: f32,
+    dataset: &impl ut::data::Dataset,
+    on_iteration_ended_hook: F)
 where
     F: Fn(usize)
 {
-    let ActivationProfile{activation_function, activation_function_derivative}
-        = ActivationProfile::new(activation);
     let mut forward_propagation = ForwardPropagation{activate: activation_function};
     let mut back_propagation = BackPropagation::from_network(net,
-        cost_function, activation_function_derivative, training_rate);
+        cost_function_derivative, activation_function_derivative, training_rate);
     let mut input_signal = ut::signal_stub_from_network_input(net);
     let mut output_signal_reference = ut::signal_stub_from_network_output(net);
 
