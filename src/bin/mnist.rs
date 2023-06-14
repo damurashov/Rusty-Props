@@ -1,3 +1,5 @@
+use std::thread::panicking;
+
 /// MNIST is an annotated dataset of handwritten digits.
 /// http://yann.lecun.com/exdb/mnist/
 ///
@@ -160,10 +162,21 @@ fn test_network(net: &mut network::Network, mnist: &Mnist) {
 }
 
 fn make_network() -> network::Network {
-    match ut::network_deserialize_from_file(NETWORK_FILE) {
+    let network = match ut::network_deserialize_from_file(NETWORK_FILE) {
         Err(_) => network::Network::from_geometry(&NETWORK_GEOMETRY.into()),
         Ok(net) => net,
+    };
+
+    // Make sure that geometry is suitable for the purposes of the ongoing task
+    if !network.is_match_geometry(&NETWORK_GEOMETRY) {
+        log::error!("Loaded and created network geometries don't match. \
+            Created network's geometry: {:?}, expected geometry: {:?}",
+            &network.geometry(),
+            &NETWORK_GEOMETRY);
+        panic!();
     }
+
+    network
 }
 
 pub fn main() {
