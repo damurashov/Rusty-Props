@@ -4,3 +4,6 @@ default:
 
 run_mnist_debug:
 	RUST_BACKTRACE=1 RUST_LOG=trace cargo run --bin mnist 0
+
+run_mnist_recognition_debug:
+	RUST_BACKTRACE=1 RUST_LOG=trace cargo run --bin mnist -- -1
