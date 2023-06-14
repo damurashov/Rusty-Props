@@ -228,6 +228,14 @@ impl Network {
             }
         }
     }
+
+    pub fn is_match_geometry(&self, geometry: &[usize]) -> bool {
+        if self.n_layers() != geometry.len() {
+            false
+        } else {
+            (0..self.n_layers()).all(|ilayer| self.layer_len(ilayer) == geometry[ilayer])
+        }
+    }
 }
 
 #[cfg(test)]
