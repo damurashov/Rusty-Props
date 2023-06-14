@@ -3,6 +3,7 @@
 ///
 /// This module trains the network using this dataset.
 
+use log;
 use mnist::{Mnist, MnistBuilder};
 use rusty_props::algorithm;
 use rusty_props::network;
@@ -167,18 +168,24 @@ fn make_network() -> network::Network {
 
 pub fn main() {
     use std::env::args;
+    use env_logger;
     const TRAINING_SET_LEN: usize = 2000;
     const TEST_SET_LEN: usize = 100;
 
+    env_logger::init();
     let args: Vec<String> = args().collect();
+    log::trace!("Arguments: {:?}", &args);
     let mnist = mnist_load(TRAINING_SET_LEN, TEST_SET_LEN);
     let starting_image_index = args[1].parse::<i32>().unwrap();  // If true, there will be attempt to load an existing network
+    log::trace!("{}", starting_image_index);
     let should_run_recognition = starting_image_index < 0;
     let mut network = make_network();
 
     if should_run_recognition {
+        log::info!("Starting recognition");
         test_network(&mut network, &mnist);
     } else {
+        log::info!("Continuing training from image {}", starting_image_index + 1);
         train_network(&mut network, &mnist, starting_image_index as usize);
     }
 }
