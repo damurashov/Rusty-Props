@@ -250,6 +250,20 @@ impl Network {
             (0..self.n_layers()).all(|ilayer| self.layer_len(ilayer) == geometry[ilayer])
         }
     }
+
+    /// Checks that all of the network's weights and biases have valid values,
+    /// so the network is suitable for applying forward propagation.
+    pub fn is_initialized(&self) -> bool {
+        for ilayer in 1..self.n_layers() {
+            if self.layers[ilayer].w.iter().any(|edge| edge[1].is_nan() || edge[1].is_nan()) {
+                return false;
+            } else if self.layers[ilayer].b.iter().any(|edge| edge[1].is_nan() || edge[1].is_nan()) {
+                return false;
+            }
+        }
+
+        true
+    }
 }
 
 #[cfg(test)]
