@@ -153,7 +153,7 @@ fn test_network(net: &mut network::Network, mnist: &Mnist) {
         ACTIVATION_FUNCTION,
         &mnist_dataset,
         |expected_signal, actual_signal| {
-            println!("Expected digit is {}, actual digit is {},
+            log::info!("Expected digit is {}, actual digit is {}, \
                 vector cost function value is {}",
                 ut::signal_find_max_index(expected_signal),
                 ut::signal_find_max_index(actual_signal),
