@@ -101,7 +101,7 @@ impl Network {
     /// `geometry` specifies how many nodes reside on a layer. Indices of
     /// `geometry` items are layer indices in the network.
     ///
-    /// Post: the network will be initialized w/ NAN values
+    /// Post: the network will be initialized w/ NAN values.
     pub fn from_geometry(geometry: &std::vec::Vec<usize>) -> Network {
         let mut network = Network{
             layers: std::vec::Vec::new(),
@@ -143,6 +143,8 @@ impl Network {
         return network;
     }
 
+    /// Behaves like `from_geometry`, but pre-initializes weights and biases
+    /// with random values.
     pub fn from_geometry_preinit_random(geometry: &std::vec::Vec<usize>) -> Network {
         use crate::algorithm;
 
