@@ -143,6 +143,18 @@ impl Network {
         return network;
     }
 
+    pub fn from_geometry_preinit_random(geometry: &std::vec::Vec<usize>) -> Network {
+        use crate::algorithm;
+
+        // Create a network
+        let mut network = Network::from_geometry(geometry);
+
+        // Pre-init the network's weights
+        algorithm::network_init_random(&mut network);
+
+        network
+    }
+
     #[inline]
     pub fn init_input_layer(&mut self, signal: &Signal) {
         assert!(self.layers.len() > 0);
