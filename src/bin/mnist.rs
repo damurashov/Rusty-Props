@@ -133,7 +133,7 @@ fn train_network(net: &mut network::Network, mnist: &Mnist, ibegin_training_imag
         TRAINING_RATE,
         &mnist_dataset,
         |iteration_number| {
-            println!("{} of {}", iteration_number,
+            log::info!("Training image {} of {}", iteration_number,
                 (&mnist_dataset as &dyn ut::data::Dataset).length());
         }
     );
