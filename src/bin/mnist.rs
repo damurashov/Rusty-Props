@@ -187,7 +187,7 @@ fn make_network() -> network::Network {
 pub fn main() {
     use std::env::args;
     use env_logger;
-    const TRAINING_SET_LEN: usize = 2000;
+    const TRAINING_SET_LEN: usize = 50;
     const TEST_SET_LEN: usize = 100;
 
     env_logger::init();
