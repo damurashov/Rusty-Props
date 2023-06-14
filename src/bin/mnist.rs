@@ -176,6 +176,9 @@ fn make_network() -> network::Network {
             &network.geometry(),
             &NETWORK_GEOMETRY);
         panic!();
+    } else if !network.is_initialized() {
+        log::error!("Loaded network is not initialized");
+        panic!();
     }
 
     network
