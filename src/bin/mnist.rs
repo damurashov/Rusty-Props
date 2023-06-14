@@ -23,6 +23,8 @@ const COST_FUNCTION_DERIVATIVE: algorithm::CostFunctionDerivative
     = algorithm::func::cost_mse_d;
 const VECTOR_COST_FUNCTION: algorithm::VectorCostFunction
     = algorithm::func::sum_squared_errors_vector_cost_function;
+const NETWORK_FILE: &str = "network.bin";
+static OUTPUT_FILE_NAME: &str = NETWORK_FILE;
 
 /// Encapsulates traininig state, so it can be resumed later
 struct MnistTrainingState<'a> {
@@ -67,8 +69,6 @@ impl ut::data::Dataset for MnistTrainingState<'_> {
         self.dataset.trn_lbl.len() - self.base_offset
     }
 }
-
-const NETWORK_FILE: &str = "network.bin";
 
 fn mnist_load(training_set_length: usize, test_set_length: usize) -> Mnist {
     use std::env::current_dir;
@@ -121,6 +121,8 @@ mod test_mnist_load {
 /// Trains network using back propagation algorithm. It can resume previously
 /// started training session, if ibegin_training_image > 0
 fn train_network(net: &mut network::Network, mnist: &Mnist, ibegin_training_image: usize) {
+    use crate::ut;
+
     let mut mnist_dataset = MnistTrainingState{
         dataset: mnist,
         base_offset: ibegin_training_image,
@@ -137,7 +139,7 @@ fn train_network(net: &mut network::Network, mnist: &Mnist, ibegin_training_imag
                 (&mnist_dataset as &dyn ut::data::Dataset).length());
         }
     );
-    // TODO: save network
+    ut::network_serialize_into_file(&net, OUTPUT_FILE_NAME);
 }
 
 /// Runs forward propagation on a network, measures its performance.
