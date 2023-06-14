@@ -165,7 +165,7 @@ fn test_network(net: &mut network::Network, mnist: &Mnist) {
 
 fn make_network() -> network::Network {
     let network = match ut::network_deserialize_from_file(NETWORK_FILE) {
-        Err(_) => network::Network::from_geometry(&NETWORK_GEOMETRY.into()),
+        Err(_) => network::Network::from_geometry_preinit_random(&NETWORK_GEOMETRY.into()),
         Ok(net) => net,
     };
 
