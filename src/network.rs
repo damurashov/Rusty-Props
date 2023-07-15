@@ -260,7 +260,7 @@ impl Network {
             for ifrom in 0..self.layer_len(ilayer - 1) {
                 for ito in 0..self.layer_len(ilayer) {
                     if self.w(ilayer, ifrom, ito).is_nan() {
-                        log::warn!("Weight value between <layer.node> {}.{} and {}.{} is NaN",
+                        log::warn!("Weight value between <layer:node> {}:{} and {}:{} is NaN",
                             ilayer - 1,
                             ifrom,
                             ilayer,
@@ -270,7 +270,7 @@ impl Network {
                     }
 
                     if self.b(ilayer, ifrom, ito).is_nan() {
-                        log::warn!("Bias value between <layer.node> {}.{} and {}.{} is NaN",
+                        log::warn!("Bias value between <layer:node> {}:{} and {}:{} is NaN",
                             ilayer - 1,
                             ifrom,
                             ilayer,
