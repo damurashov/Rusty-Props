@@ -60,6 +60,7 @@ impl ut::data::Dataset for MnistTrainingState<'_> {
         // Initialize positions not corresponding to the current digit with 0.0
         signal.reserve_exact(MNIST_OUTPUT_LAYER_SIZE);
         signal.resize(MNIST_OUTPUT_LAYER_SIZE, 0.0f32);
+        signal.fill(0.0f32);
 
         // Initialize the position corresponding to the digit with 1.0
         signal[position] = 1.0;
