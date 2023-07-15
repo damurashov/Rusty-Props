@@ -50,6 +50,9 @@ impl ut::data::Dataset for MnistTrainingState<'_> {
             &self.dataset.trn_img[start_position..start_position + IMG_SIZE_BYTES],
             signal
         );
+
+        // Normalize the signal
+        signal.iter_mut().map(|value| *value /= 255.0f32).count();
     }
 
     /// Output of 10 floats each representing a digit
